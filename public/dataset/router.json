@@ -41,5 +41,120 @@
         }
       }
     ]
+  },
+  {
+    "path": "/testcom",
+    "name": "testcom",
+    "component": "Layout",
+    "redirect": "timeline",
+    "meta": {
+      "title": "测试组件",
+      "hidden": false,
+      "alwaysShow": true
+    },
+    "children": [
+      {
+        "path": "timeline",
+        "name": "timeline",
+        "component": "TestCom/Index.vue",
+        "meta": {
+          "title": "时间线",
+          "hidden": false
+        }
+      },
+      {
+        "path": "exporteltable",
+        "name": "exporteltable",
+        "component": "ExportElTable/Index.vue",
+        "meta": {
+          "title": "导出表格",
+          "hidden": false
+        }
+      },
+      {
+        "path": "elementtest",
+        "name": "elementtest",
+        "component": "ElementCom/Index.vue",
+        "meta": {
+          "title": "Element测试",
+          "hidden": false
+        }
+      }
+    ]
+  },
+  {
+    "path": "/zrender",
+    "name": "zrender",
+    "component": "Layout",
+    "redirect": "zrenderstart",
+    "meta": {
+      "title": "ZRender",
+      "hidden": false,
+      "alwaysShow": true
+    },
+    "children": [
+      {
+        "path": "zrenderstart",
+        "name": "zrenderstart",
+        "component": "ZRender/Index.vue",
+        "meta": {
+          "title": "测试",
+          "hidden": false
+        }
+      },
+      {
+        "path": "zsubpage",
+        "name": "zsubpage",
+        "component": "RouterSocket",
+        "redirect": "circleanimate",
+        "meta": {
+          "title": "功能演示",
+          "hidden": false,
+          "alwaysShow": true
+        },
+        "children": [
+          {
+            "path": "circleanimate",
+            "name": "circleanimate",
+            "component": "ZRender/subpage/CircleAnimate/Index.vue",
+            "meta": {
+              "title": "圆与动画",
+              "hidden": false
+            }
+          },
+          {
+            "path": "mapchart",
+            "name": "mapchart",
+            "component": "ZRender/subpage/MapChart/Index.vue",
+            "meta": {
+              "title": "地图图表",
+              "hidden": false
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "/excel",
+    "name": "excel",
+    "component": "Layout",
+    "redirect": "readexcel",
+    "meta": {
+      "title": "处理表格",
+      "hidden": false,
+      "alwaysShow": true
+    },
+    "children": [
+      {
+        "path": "readexcel",
+        "name": "readexcel",
+        "component": "Excel/Read/Index.vue",
+        "meta": {
+          "title": "读取表格内容",
+          "hidden": false
+        }
+      }
+    ]
   }
 ]

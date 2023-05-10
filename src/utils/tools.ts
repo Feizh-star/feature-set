@@ -73,3 +73,37 @@ export function debounce(fn: (...args: any[]) => any, delay: number) {
     }, delay)
   }
 }
+
+/**
+ * 判断闰年
+ */
+export function isLeap(year: number) {
+  if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)) {
+    return true;
+  }
+  return false;
+}
+
+/**
+ * 获取根据月份获取天数
+ */
+export function getDaysByMonth(fullYear: number, month: number) {
+  let days = 30
+  switch (month) {
+    case 1:
+    case 3:
+    case 5:
+    case 7:
+    case 8:
+    case 10:
+    case 12:
+      days = 31
+      break
+    case 2:
+      days = isLeap(fullYear) ? 29 : 28
+      break
+    default:
+      days = 30
+  }
+  return days
+}
