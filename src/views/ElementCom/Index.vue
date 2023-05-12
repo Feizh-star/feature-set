@@ -32,7 +32,7 @@ function disabledHour(a: any, b: any) {
 }
 
 const dateTime = ref([dateToString(new Date(), 'YYYY-MM-DD HH:mm')])
-const pickerType = ref<TypeString>('quarter')
+const pickerType = ref<TypeString>('ten')
 watch(dateTime, (newVal) => {
   console.log(newVal)
 })
@@ -76,6 +76,7 @@ watch(value6, (newVal) => {
         :show-minute="true"
         :clearable="true"
         :hour-step="1"
+        class="light-datepicker"
       />
         <!-- :disable-start="new Date()" -->
     </div>
@@ -102,4 +103,115 @@ watch(value6, (newVal) => {
 .el-time-spinner__item.is-disabled {
   display: none;
 }
+</style>
+
+<style lang="less" scoped>
+
+// :deep(.light-datepicker) {
+//   width: 180px;
+//   .mx-date-time {
+//     width: 348px;
+//     height: 392px;
+//   }
+//   .mx-calendar {
+//     width: 348px;
+//   }
+//   .mx-calendar-content,
+//   .mx-time-content {
+//     height: 344px;
+//   }
+//   .mx-input,
+//   .custom-input {
+//     height: 32px;
+//     line-height: 32px;
+//     color: #eeeeee;
+//     background-color: rgba(4, 34, 61, 0.8) !important;
+//     box-shadow: inset 0px 0px 10px rgba(0, 255, 255, 0.2) !important;
+//     border: 1px solid !important;
+//     border-image-source: linear-gradient(221.54deg, rgba(85, 224, 255, 0) 3.16%, #55e0ff 71.22%, rgba(85, 224, 255, 0) 99.96%) !important;
+//     border-image-slice: 1 !important;
+//     border-radius: 0px !important;
+//   }
+//   .custom-input {
+//     line-height: 18px;
+//   }
+//   .mx-icon-calendar {
+//     color: #eeeeee;
+//   }
+//   .mx-table-date th {
+//     text-align: center;
+//     color: #eeeeee
+//   }
+//   .mx-btn {
+//     color: #eeeeee;
+//     &:hover {
+//       color: #1284e7;
+//     }
+//   }
+//   .mx-calendar-header-label {
+//     color: #eeeeee;
+//   }
+//   .mx-calendar-week-mode .mx-date-row:hover {
+//     background-color: #134774;
+//   }
+//   .mx-calendar-week-mode .mx-date-row.mx-active-week {
+//     background-color: #1284e7;
+//   }
+//   .mx-datepicker-popup .mx-calendar-content .mx-date-row.mx-active-week .cell:hover {
+//     background-color: #1284e7;
+//   }
+//   .panel-style(mx-datepicker-popup, mx-calendar-content, cell);
+//   .panel-style(mx-time, mx-time-content, mx-time-item);
+//   .panel-style(@outclass, @innerclass, @cellclass) {
+//     .@{outclass} {
+//       border: 1px solid;
+//       border-image-source: linear-gradient(0deg, #55e0ff 0%, rgba(85, 224, 255, 0.05) 35.34%, rgba(85, 224, 255, 0.05) 88.47%, #55e0ff 100%) !important;
+//       border-image-slice: 1;
+//       background-color: #07142a;
+//       box-shadow: inset 0px 0px 10px rgba(0, 255, 255, 0.2);
+//       .@{innerclass} {
+//         .@{cellclass} {
+//           color: #eeeeee;
+//           &.disabled:not(.not-current-month) {
+//             color: #9e9e9e;
+//             background-color: #3f3f3f;
+//             &:hover {
+//               background-color: #3f3f3f;
+//             }
+//           }
+//           &.not-current-month {
+//             color: #9e9e9e;
+//             &:hover {
+//               background-color: #07142a;
+//             }
+//           }
+//           &:hover {
+//             background-color: #134774;
+//           }
+//           &.active:not(.not-current-month) {
+//             background-color: #1284e7;
+//           }
+//         }
+//       }
+//     }
+//   }
+//   .mx-calendar-range {
+//     .mx-date-row,
+//     .mx-table-month {
+//       .cell {
+//         &.in-range:not(.not-current-month), &.hover-in-range:not(.not-current-month) {
+//           color: #eeeeee;
+//           background-color: #1284e7;
+//         }
+//         &.active:not(.not-current-month) {
+//           color: #eeeeee;
+//           background-color: #1284e7;
+//         }
+//       }
+//     }
+//   }
+//   .mx-btn-shortcut.disabled {
+//     color: #9e9e9e;
+//   }
+// }
 </style>

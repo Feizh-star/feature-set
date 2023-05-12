@@ -1,11 +1,5 @@
-<script setup lang='ts'>
-import { ref } from 'vue'
-import DatePicker from "vue-datepicker-next"
-import "vue-datepicker-next/index.css"
-import "vue-datepicker-next/locale/zh-cn.es"
-import { getDaysByMonth, isLeap } from '@/utils/tools'
-import { dateToString, addHours, subHours } from '@/utils/moment'
-
+<script lang="ts">
+import moment from 'moment'
 type TenStartNums = 1 | 11 | 21
 type QuarterStartNums = 1 | 4 | 7 | 10
 export type TypeString = 'date' | 'datetime' | 'week' | 'month' | 'year' | 'ten' | 'quarter'
@@ -24,9 +18,66 @@ interface Props {
   popupClass?: any // 仅仅用于取消本参数透传效果
   disabledDate?: any // 仅仅用于取消本参数透传效果
   disabledTime?: any // 仅仅用于取消本参数透传效果
+  scrollDuration?: any // 仅仅用于取消本参数透传效果
   commonFormat?: string // 仅用于没有format时的date和datetime
   disableStart?: Date
 }
+
+/**
+ * 判断闰年
+ */
+export function isLeap(year: number) {
+  if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)) {
+    return true;
+  }
+  return false;
+}
+/**
+ * 获取根据月份获取天数
+ */
+export function getDaysByMonth(fullYear: number, month: number) {
+  let days = 30
+  switch (month) {
+    case 1:
+    case 3:
+    case 5:
+    case 7:
+    case 8:
+    case 10:
+    case 12:
+      days = 31
+      break
+    case 2:
+      days = isLeap(fullYear) ? 29 : 28
+      break
+    default:
+      days = 30
+  }
+  return days
+}
+export function dateToString(d: Date, formatter = 'YYYY-MM-DD HH:mm') {
+  return moment(d).format(formatter)
+}
+export function addHours(d: string, hours: number, formatter = 'YYYY-MM-DD HH:mm') {
+  return moment(d, formatter).add(hours, 'h').format(formatter)
+}
+export function subHours(d: string, hours: number, formatter = 'YYYY-MM-DD HH:mm') {
+  return moment(d, formatter).subtract(hours, 'h').format(formatter)
+}
+</script>
+
+<script setup lang='ts'>
+import {
+  ref,
+  useAttrs,
+  computed,
+  watch,
+  nextTick,
+} from 'vue'
+import VueDatePicker from "vue-datepicker-next"
+import "vue-datepicker-next/index.css"
+import "vue-datepicker-next/locale/zh-cn.es"
+
 const attrs = useAttrs()
 const props = withDefaults(defineProps<Props>(), {
   modelValue: () => ['', ''],
@@ -121,7 +172,7 @@ function packageStringDate(pickerValue: string, type: TypeString = props.type) {
 function getWeekRange(pickerValue: string, parseFormat: string) {
   const dateInWeek = new Date(new Date(pickerValue).setHours(0, 0, 0, 0))
   const dateInWeekString = dateToString(dateInWeek, parseFormat)
-  const dayInWeek = dateInWeek.getDay()
+  const dayInWeek = dateInWeek.getDay() ? dateInWeek.getDay() : 7
   const weekStart = subHours(dateInWeekString, (dayInWeek - 1) * 24, parseFormat)
   let weekEnd = dateToString(new Date(new Date(addHours(weekStart, 6 * 24, parseFormat)).setHours(23, 59, 59, 999)), parseFormat)
   const { disableStart } = props
@@ -169,7 +220,7 @@ watch(innerValue, (newVal) => {
   const paramStart = Array.isArray(newVal) ? newVal[0] : newVal
   const paramStartDate = new Date(paramStart)
   // @ts-ignore
-  currentCalendarDate.value = paramStartDate == 'Invalid Date' ? new Date() : paramStartDate
+  currentCalendarDate.value = isNaN(paramStartDate.getTime()) ? new Date() : paramStartDate
 }, { immediate: true })
 //切换年月事件
 function calendarChange(date: Date[]) {
@@ -371,6 +422,7 @@ function openDate() {
         div.removeEventListener('click', cellClick)
       }
     })
+    handleShortcutsDisable()
     emits('open')
   })
   
@@ -410,10 +462,13 @@ function cellClick(e: Event) {
  * 处理shortcuts禁选
  */
 watch(currentCalendarDate, (newVal) => {
+  handleShortcutsDisable()
+})
+function handleShortcutsDisable() {
   const { type, disableStart } = props
-  if (!disableStart) return
-  const calYear = newVal.getFullYear()
-  const calMonth = newVal.getMonth() + 1
+  if (!disableStart || !currentCalendarDate.value) return
+  const calYear = currentCalendarDate.value.getFullYear()
+  const calMonth = currentCalendarDate.value.getMonth() + 1
   const shortcutsEls = datepicker.value?.getElementsByClassName('mx-btn-shortcut')
   const btns = [...shortcutsEls]
   for (const [index, btn] of btns.entries()) {
@@ -445,7 +500,7 @@ watch(currentCalendarDate, (newVal) => {
       }
     }
   }
-})
+}
 function setDisable(b: HTMLButtonElement, disable: boolean) {
   b.disabled = disable
   b.classList[disable ? 'add' : 'remove']('disabled')
@@ -453,7 +508,7 @@ function setDisable(b: HTMLButtonElement, disable: boolean) {
 </script>
 
 <template>
-  <DatePicker
+  <VueDatePicker
     ref="datepicker"
     v-model:value="innerValue"
     :type="innerType"
@@ -465,6 +520,7 @@ function setDisable(b: HTMLButtonElement, disable: boolean) {
     :popup-class="isTenQuarter ? 'popup-hideone' : ''"
     :class="{'input-hideone': isTenQuarter}"
     :append-to-body="false"
+    :scroll-duration="0"
     @calendar-change="calendarChange"
     @pick="pickDate"
     @open="openDate"
@@ -472,10 +528,10 @@ function setDisable(b: HTMLButtonElement, disable: boolean) {
     <template #input="param" v-if="isTenQuarter">
       <div class="custom-input">{{ inputSlotDataFormatter(param) }}</div>
     </template>
-  </DatePicker>
+  </VueDatePicker>
 </template>
 
-<style lang='scss' scoped>
+<style lang='less' scoped>
 .input-hideone {
   width: 210px;
 }
@@ -499,7 +555,7 @@ function setDisable(b: HTMLButtonElement, disable: boolean) {
   }
 }
 </style>
-<style lang="scss">
+<style lang="less">
 .popup-hideone {
   .mx-calendar-range {
     .mx-calendar:nth-child(2) {
