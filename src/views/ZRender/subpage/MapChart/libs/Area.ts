@@ -162,12 +162,12 @@ class Area implements IBaseChart {
       compoundPath.on('click', (e) => {
         this.handleClick(e, currentFeature, evts as IEvent)
       })
-      compoundPath.on('mouseover', (e) => {
-        this.handleMouseover(e, currentFeature, evts as IEvent)
-      })
-      compoundPath.on('mouseout', (e) => {
-        this.handleMouseout(e, currentFeature, evts as IEvent)
-      })
+      // compoundPath.on('mouseover', (e) => {
+      //   this.handleMouseover(e, currentFeature, evts as IEvent)
+      // })
+      // compoundPath.on('mouseout', (e) => {
+      //   this.handleMouseout(e, currentFeature, evts as IEvent)
+      // })
     })
     return this
   }
