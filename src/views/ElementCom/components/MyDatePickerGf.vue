@@ -1,7 +1,7 @@
 <script lang="ts">
 import moment from "moment";
 type TenStartNums = 1 | 11 | 21;
-type QuarterStartNums = 1 | 4 | 7 | 10;
+type QuarterStartNums = 3 | 6 | 9 | 12;
 export type TypeString = "date" | "datetime" | "week" | "month" | "year" | "ten" | "quarter";
 export type TShortcuts = IShortcutsItem[];
 interface IShortcutsItem {
@@ -113,7 +113,18 @@ const innerValue = computed({
     let result: string[] | string = "";
     if (Array.isArray(value)) {
       // value是一个数组，说明此时range或multiple是true，原封不动
-      result = value;
+      // 当type是quarter时，需要将结束时间改为次月1日（组件内部仍然是结束月份最后1天，否则视图将显示次月也被选中）
+      if (props.type === "quarter" && value.length === 2) {
+        const lastIndex = value.length - 1;
+        const valueType = getValueType();
+        result = value;
+        result[lastIndex] = moment(result[lastIndex])
+          .add(1, "day")
+          .set({ hour: 0, minute: 0, second: 0 })
+          .format(valueType);
+      } else {
+        result = value;
+      }
     } else {
       // value是单个值，需要包装成数组
       result = packageStringDate(value, props.type);
@@ -372,17 +383,19 @@ function getTenRangeByDate(currentDate: Date, startDay?: TenStartNums) {
 /**
  * 根据日期获取季度范围
  * @param currentDate 当前日期
- * @param startMonth 指定当前月：1代表第一季度，4代表第二季度，7代表第三季度，10代表第四季度，
+ * @param startMonth 指定当前月：3代表第一季度，6代表第二季度，9代表第三季度，12代表第四季度，
  */
 function getQuarterRangeByDate(currentDate: Date, startMonth?: QuarterStartNums) {
   const fullYear = currentDate.getFullYear();
   const month = startMonth || currentDate.getMonth() + 1;
-  const monthStart = month < 4 ? 1 : month < 7 ? 4 : month < 10 ? 7 : 10;
-  const monthEnd = month < 4 ? 3 : month < 7 ? 6 : month < 10 ? 9 : 12;
+  const monthStart = month < 3 || month > 11 ? 12 : month < 6 && month > 2 ? 3 : month < 9 && month > 5 ? 6 : 9;
+  const monthEnd = month < 3 || month > 11 ? 2 : month < 6 && month > 2 ? 5 : month < 9 && month > 5 ? 8 : 11;
   const monthEndDate = getDaysByMonth(fullYear, monthEnd);
+  const yearStart = month < 3 ? fullYear - 1 : fullYear;
+  const yearEnd = month > 11 ? fullYear + 1 : fullYear;
 
-  const newDate = new Date(`${fullYear}-${monthStart < 10 ? `0${monthStart}` : monthStart}-01 00:00`);
-  let newDateEnd = new Date(`${fullYear}-${monthEnd < 10 ? `0${monthEnd}` : monthEnd}-${monthEndDate} 23:59`);
+  const newDate = new Date(`${yearStart}-${monthStart < 10 ? `0${monthStart}` : monthStart}-01 00:00`);
+  let newDateEnd = new Date(`${yearEnd}-${monthEnd < 10 ? `0${monthEnd}` : monthEnd}-${monthEndDate} 23:59`);
   const { disableStart } = props;
   if (disableStart) {
     newDateEnd = new Date(newDateEnd).getTime() - disableStart.getTime() > 0 ? disableStart : newDateEnd;
@@ -399,10 +412,10 @@ const tenShortcuts = [
   { text: "下旬", date: 21 },
 ] as const;
 const quarterShortcuts = [
-  { text: "第一季度", month: 1 },
-  { text: "第二季度", month: 4 },
-  { text: "第三季度", month: 7 },
-  { text: "第四季度", month: 10 },
+  { text: "第一季度", month: 3 },
+  { text: "第二季度", month: 6 },
+  { text: "第三季度", month: 9 },
+  { text: "第四季度", month: 12 },
 ] as const;
 const innerShortcuts = computed(() => {
   if (props.type === "ten") {
@@ -519,7 +532,7 @@ function handleShortcutsDisable() {
         setDisable(btn, true);
         continue;
       }
-      const indexToTen = [1, 4, 7, 10] as const;
+      const indexToTen = [3, 6, 9, 12] as const;
       const calIndexTen = getQuarterRangeByDate(calYearStart, indexToTen[index]);
       if (calIndexTen[0].getTime() - disableStart.getTime() > 0) {
         setDisable(btn, true);
