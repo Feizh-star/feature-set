@@ -28,15 +28,11 @@ export const routes: Array<RouteRecordRaw> = [
   //   ]
   // },
   {
-    path: '/404',
-    component: {
-      render() {
-        return h('div', ['404'])
-      }
-    },
+    path: '/:pathMatch(.*)*',
     meta: {
       hidden: true,
     },
+    component: () => import('@/views/Error/Index.vue')
   },
 ]
 

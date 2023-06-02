@@ -136,6 +136,59 @@
     ]
   },
   {
+    "path": "/maptest",
+    "name": "maptest",
+    "component": "Layout",
+    "redirect": "mapcommon",
+    "meta": {
+      "title": "地图测试",
+      "hidden": false,
+      "alwaysShow": true
+    },
+    "children": [
+      {
+        "path": "mapcommon",
+        "name": "mapcommon",
+        "component": "Map/Index.vue",
+        "meta": {
+          "title": "地图测试",
+          "hidden": false
+        }
+      },
+      {
+        "path": "mapfeature",
+        "name": "mapfeature",
+        "component": "RouterSocket",
+        "redirect": "mapstain",
+        "meta": {
+          "title": "地图功能",
+          "hidden": false,
+          "alwaysShow": true
+        },
+        "children": [
+          {
+            "path": "mapstain",
+            "name": "mapstain",
+            "component": "Map/pages/staintest/Index.vue",
+            "meta": {
+              "title": "色斑图测试",
+              "hidden": false
+            }
+          },
+          {
+            "path": "mapscreencut",
+            "name": "mapscreencut",
+            "component": "Map/pages/screencut/Index.vue",
+            "meta": {
+              "title": "地图导出",
+              "hidden": false
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
     "path": "/excel",
     "name": "excel",
     "component": "Layout",

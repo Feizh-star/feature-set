@@ -1,0 +1,22 @@
+[
+  {
+    "id": "Debrisflow001",
+    "acquired_time": "2010年8月15日",
+    "ground_resolution": 0.4,
+    "disaster_name": "文家沟泥石流",
+    "disaster_time": "2010年8月13日",
+    "latitude": "31.549131 ",
+    "longitude": "104.111551 ",
+    "disaster_type": "沟谷泥石流",
+    "disaster_area": 700000,
+    "disaster_magnitude": 430,
+    "address": "四川省德阳市绵竹市清平镇绵茂公路"
+  },
+  {
+    "id": "ponding0",
+    "address": "昆仑东路怡心园小区门口",
+    "longitude": 101.822776,
+    "latitude": 36.584301,
+    "disaster_type": "积水风险"
+  }
+]

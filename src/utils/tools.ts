@@ -1,3 +1,5 @@
+import html2canvas from 'html2canvas'
+
 /**
  * 遍历树，查找指定的节
  * @param {Array} data 树的根
@@ -106,4 +108,78 @@ export function getDaysByMonth(fullYear: number, month: number) {
       days = 30
   }
   return days
+}
+
+/**
+ * 合并对象
+ * @param a 
+ * @param b 
+ * @returns 
+ */
+export function merge(a: any, b: any) {
+  // 检查输入是否为对象
+  if (typeof a !== 'object' || typeof b !== 'object') {
+    throw new Error('merge 函数只能接受对象类型的参数')
+  }
+
+  // 遍历 b 的所有属性
+  for (const key in b) {
+    // 检查 b 当前属性是否为对象
+    if (typeof b[key] === 'object') {
+      // 如果 a 当前属性也为对象，则递归合并
+      if (typeof a[key] === 'object') {
+        merge(a[key], b[key])
+      } else {
+        // 否则直接复制 b 当前属性到 a 上
+        a[key] = JSON.parse(JSON.stringify(b[key]))
+      }
+    } else {
+      // 如果 b 当前属性不为对象，则直接覆盖 a 当前属性
+      a[key] = b[key]
+    }
+  }
+
+  return a
+}
+
+/**
+ * 计算b对a的差集
+ * @param a 
+ * @param b 
+ * @returns 
+ */
+export function differenceSet(a: Array<any>, b: Array<any>) {
+  const bs = new Set([...b])
+  return [...new Set([...a].filter(x => !bs.has(x)))]
+}
+
+export function curAreaImageByElements(lt: HTMLElement, rb: HTMLElement, filename?: string) {
+  filename = filename || 'image'
+  const body = document.body
+  const ltLayoutInfo = lt.getBoundingClientRect()
+  const rbLayoutInfo = rb.getBoundingClientRect()
+  const top = ltLayoutInfo.top
+  const left = ltLayoutInfo.left
+  const bottom = rbLayoutInfo.top + rbLayoutInfo.height
+  const right = rbLayoutInfo.left + rbLayoutInfo.width
+  const areaWidth = right - left
+  const areaHeight = bottom - top
+  html2canvas(body, { useCORS: true, }).then(mcanvas => {
+    // const cutCanvas = document.createElement('canvas')
+    // cutCanvas.width = areaWidth
+    // cutCanvas.height = areaHeight
+    // const cctx = cutCanvas.getContext('2d', { preserveDrawingBuffer: true }) as CanvasRenderingContext2D
+    // cctx.drawImage(mcanvas, left, top, areaWidth, areaHeight, 0, 0, areaWidth, areaHeight)
+    // const imgURL = cutCanvas.toDataURL("image/png");
+    // download(filename as string, imgURL);
+    
+    const mctx = mcanvas.getContext('2d', { preserveDrawingBuffer: true }) as CanvasRenderingContext2D
+    const imgData = mctx.getImageData(left, top, areaWidth, areaHeight)
+    mcanvas.width = areaWidth
+    mcanvas.height = areaHeight
+    mctx.putImageData(imgData, 0, 0)
+    // 将canvas转换为图像URL
+    const imgURL = mcanvas.toDataURL("image/png");
+    download(filename as string, imgURL);
+  });
 }
