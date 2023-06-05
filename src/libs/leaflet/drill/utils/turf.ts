@@ -58,3 +58,21 @@ export function computeArea(p: Array<Array<GeoJSON.Position>>): number {
   const area = turf.area(polygon);
   return area
 }
+
+/**
+ * 翻转经纬度
+ * @param geoData geojson或线数组
+ */
+export function flipLngLat(geoData: number[][]): number[][]
+export function flipLngLat(geoData: GeoJSON.FeatureCollection): GeoJSON.FeatureCollection
+export function flipLngLat(geoData: GeoJSON.FeatureCollection | number[][]): GeoJSON.FeatureCollection | number[][] {
+  if (Array.isArray(geoData)) {
+    return geoData.map(point => {
+      const [x, y] = point
+      return [y, x]
+    })
+  } else {
+    return turf.flip(geoData as turf.AllGeoJSON) as GeoJSON.FeatureCollection
+  }
+  
+}

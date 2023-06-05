@@ -131,7 +131,7 @@ export function merge(a: any, b: any) {
         merge(a[key], b[key])
       } else {
         // 否则直接复制 b 当前属性到 a 上
-        a[key] = JSON.parse(JSON.stringify(b[key]))
+        a[key] = deepCopy(b[key])
       }
     } else {
       // 如果 b 当前属性不为对象，则直接覆盖 a 当前属性
@@ -140,6 +140,28 @@ export function merge(a: any, b: any) {
   }
 
   return a
+}
+
+function deepCopy<T>(obj: T): T {
+  if (obj === null || typeof obj !== 'object') {
+    return obj;
+  }
+  
+  if (Array.isArray(obj)) {
+    return obj.map(deepCopy) as unknown as T;
+  }
+  
+  // 创建一个新的对象或数组
+  const newObj = (Array.isArray(obj) ? [] : {}) as T;
+  
+  // 递归复制属性值
+  for (const key in obj) {
+    // eslint-disable-next-line
+    if (obj.hasOwnProperty(key)) {
+      newObj[key] = deepCopy(obj[key]);
+    }
+  }
+  return newObj;
 }
 
 /**

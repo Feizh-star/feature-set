@@ -1,5 +1,6 @@
 import * as L from 'leaflet'
 import * as turf from '@turf/turf'
+import * as zrender from 'zrender'
 import type { Map, LatLng } from 'leaflet'
 import { merge } from './utils/tools'
 
@@ -7,27 +8,86 @@ interface IShadowStyle {
   fillColor: string
   fillOpacity: number
 }
-export interface ShadowMaskOption<C = IShadowStyle> {
+type TBorderShapes = Array<{
+  enable?: boolean,
+  offsetX?: number, 
+  offsetY?: number, 
+  z?: number,
+  style?: {
+    [p: string]: any
+  }
+}> 
+export interface IShadowBorder {
+  dpi: number
+  borderShapes: TBorderShapes
+}
+export interface ShadowMaskOption<C = IShadowStyle, S = IShadowBorder> {
   zIndex: number
   pane: string
   style: C
+  shadowBorders: S
 }
-export type PartialShadowMaskOption = Partial<ShadowMaskOption<Partial<IShadowStyle>>>
+export type ZRender = ReturnType<typeof zrender.init>
+export type PartialShadowMaskOption = Partial<ShadowMaskOption<Partial<IShadowStyle>, Partial<IShadowBorder>>>
 
 const defaultPane = 'shadow-mask'
 const defaultOpt: ShadowMaskOption = {
-  zIndex: 990,
+  zIndex: 1000,
   pane: defaultPane,
   style: {
     fillColor: '#000000',
     fillOpacity: 0.85
+  },
+  shadowBorders: {
+    dpi: window.devicePixelRatio,
+    borderShapes: [
+      {
+        enable: false,
+        offsetX: 0, 
+        offsetY: 0, 
+        z: 30,
+        style: {
+          stroke: '#c800ff',
+          fill: 'transparent',
+          lineWidth: 2,
+          shadowBlur: 30,
+          shadowColor: '#c800ff'
+        }
+      },
+      {
+        enable: false,
+        offsetX: 6,
+        offsetY: 6,
+        z: 20,
+        style: {
+          stroke: 'transparent',
+          fill: '#bcc6db',
+          lineWidth: 0,
+        }
+      },
+      {
+        enable: false,
+        offsetX: 10,
+        offsetY: 10,
+        z: 10,
+        style: {
+          stroke: 'transparent',
+          fill: '#a1b7e5',
+          lineWidth: 0,
+        }
+      }
+    ]
   }
 }
 
 class ShadowMask {
+  static shadowBorderZIndexDelta = 10
   private map: Map
+  private shadowBorderZr: ZRender | null = null
+  private shadowBorderZrRoot: zrender.Group = new zrender.Group()
   private options: ShadowMaskOption = defaultOpt
   private shadowMaskLayer: L.Polygon | null = null
+  private border!: GeoJSON.FeatureCollection
 
   constructor(map: Map, opts: PartialShadowMaskOption = {}) {
     merge(this.options, opts)
@@ -45,9 +105,26 @@ class ShadowMask {
       pane.style.zIndex = this.options.zIndex ? `${this.options.zIndex}` : pane.style.zIndex
     }
 
+    map.createPane(this.shadowBorderPaneName).style.zIndex = `${parseFloat(pane.style.zIndex) + ShadowMask.shadowBorderZIndexDelta}`
+    const myRenderer = L.canvas({ padding: 0, pane: this.shadowBorderPaneName })
+    myRenderer.addTo(map)
+    // @ts-ignore
+    const { _container: container } = myRenderer
+    this.shadowBorderZr = zrender.init(container, {
+      devicePixelRatio: this.options.shadowBorders.dpi,
+    })
+    this.shadowBorderZr.add(this.shadowBorderZrRoot)
+    myRenderer.on('update', () => {
+      this.setShadowBorder()
+    })
+  }
+  private get shadowBorderPaneName() {
+    return this.options.pane + 'shadow-border'
   }
 
   public setShadowMask(border: GeoJSON.FeatureCollection) {
+    if (!border) throw new Error('没有border')
+    this.border = border
     const bgPolygon = genMaskPolygonByGeoJSON(border)
     this.clearShadowMask()
     this.shadowMaskLayer = L.polygon(bgPolygon as unknown as LatLng[][], {
@@ -56,6 +133,49 @@ class ShadowMask {
       fillColor: this.options.style?.fillColor,
       fillOpacity: this.options.style?.fillOpacity, 
     }).addTo(this.map)
+    this.setShadowBorder()
+  }
+  public setShadowBorder() {
+    if (!this.options.shadowBorders.borderShapes.some(s => s.enable)) return
+    if (!this.shadowBorderZr) throw new Error('zrender图层容器不存在，请确认是否初始化')
+    if (!this.border) return
+    this.shadowBorderZrRoot.removeAll()
+    const lmap = this.map
+    const shapesCfgs = this.options.shadowBorders.borderShapes
+    const paths: Array<Array<zrender.Polygon | zrender.Polyline>> = []
+    const compoundPaths: Array<zrender.CompoundPath> = []
+    turf.featureEach(this.border, (currentFeature, featureIndex) => {
+      turf.flattenEach(currentFeature, (currentFlatten, flattenIndex, multiFlattenIndex) => {
+        const geometry = currentFlatten.geometry
+        const gmy = geometry
+        // 画多边型路径
+        switch (gmy.type) {
+          case 'Polygon':
+            (gmy as GeoJSON.Polygon).coordinates.forEach(line => {
+              genPath(line as Array<[number, number]>, lmap, shapesCfgs, 'Polygon', paths)
+            })
+            break
+          case 'LineString':
+            genPath((gmy as GeoJSON.LineString).coordinates as Array<[number, number]>, lmap, shapesCfgs, 'Polygon', paths)
+            break
+        }
+      })
+    })
+    for (const [index, path] of paths.entries()) {
+      if (!shapesCfgs[index].enable) continue
+      const cp = new zrender.CompoundPath({
+        silent: true,
+        z: shapesCfgs[index].z,
+        shape: {
+          paths: path,
+        },
+        style: {
+          ...shapesCfgs[index].style
+        },
+      })
+      this.shadowBorderZrRoot.add(cp)
+      compoundPaths.push(cp)
+    }
   }
 
   public clearShadowMask() {
@@ -83,4 +203,24 @@ function genMaskPolygonByGeoJSON(geoData: GeoJSON.FeatureCollection) {
   return bgPolygon
 }
 
+
+function genPath(line: Array<[number, number]>, lmap: L.Map, shapesCfgs: TBorderShapes, shapeType: 'Polygon' | 'Polyline', paths: Array<Array<zrender.Polygon | zrender.Polyline>>) {
+  const p = line.map(point => {
+    const convert = lmap.latLngToContainerPoint([point[1], point[0]])
+    const result = []
+    for (const cfg of shapesCfgs) {
+      result.push([convert.x + (cfg.offsetX || 0), convert.y + (cfg.offsetY || 0)])
+    }
+    return result
+  })
+  for (const [index] of shapesCfgs.entries()) {
+    const path = new zrender[shapeType]({
+      shape: {
+        points: p.map(item => item[index]),
+      },
+    })
+    if (!paths[index]) paths[index] = []
+    paths[index].push(path)
+  }
+}
 export default ShadowMask

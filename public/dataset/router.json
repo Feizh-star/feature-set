@@ -130,6 +130,15 @@
               "title": "地图图表",
               "hidden": false
             }
+          },
+          {
+            "path": "mapchartl",
+            "name": "mapchartl",
+            "component": "ZRender/subpage/MapChartL/Index.vue",
+            "meta": {
+              "title": "地图图表L",
+              "hidden": false
+            }
           }
         ]
       }
