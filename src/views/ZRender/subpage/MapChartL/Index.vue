@@ -11,11 +11,11 @@ let mapIns: LMap | null = null
 
 onMounted(() => {
   mapIns = new LMap(mapRef.value as HTMLDivElement, {
-      center: [33.874936, 113.5020695], // [32.986549, 107.797788], [33.874936, 113.5020695]
-      zoom: 7, // 7
+      center: [32.986549, 107.797788], // [32.986549, 107.797788], [33.874936, 113.5020695]
+      zoom: 4, // 7 4
   }, {
-    geojson: '410000',
-    border: borderJson,
+    // geojson: '410000',
+    // border: borderJson,
     mask: {
       enable: true,
       style: {
@@ -23,7 +23,7 @@ onMounted(() => {
         fillOpacity: 0.8
       },
       shadowBorders: {
-        borderShapes: [ { enable: false }, { enable: true }, { enable: true }, ]
+        borderShapes: [ { enable: false }, { enable: false }, { enable: false }, ]
       }
     },
     drill: {
@@ -45,13 +45,13 @@ onMounted(() => {
       itemStyle: {
         color: '#47495f',
         fillColor: '#ffa73b',
-        fillOpacity: 1,
+        fillOpacity: 0.4,
         weight: 1
       },
       itemStyleActive: {
         color: '#ff0000',
         fillColor: '#effd3a',
-        fillOpacity: 1,
+        fillOpacity: 0.4,
         weight: 1
       },
       borderStyle: {

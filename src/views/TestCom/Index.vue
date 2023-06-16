@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import TimeLine from '@/components/company/TimeLine.vue';
-import HorScroll from '@/components/HorScroll/Index.vue'
+import HorScroll from '@/components/HorScroll/IndexV3.vue'
 
 
 const test_timeline = [
@@ -116,7 +116,7 @@ function confirmFunc() {
       <HorScroll>
         <div 
           class="scroll-item"
-          v-for="i in 40"
+          v-for="i in 32"
           :key="i"
         >
           <span>项目-{{ i }}</span>
@@ -144,5 +144,17 @@ function confirmFunc() {
 .test-timeline {
   height: 100%;
   background-color: #fff;
+}
+.hor-scroll-test {
+  border: 1px solid #efefef;
+  .scroll-item {
+    width: 60px;
+    &:nth-child(2n) {
+      background-color: rgb(60, 195, 248);
+    }
+    &:nth-child(2n + 1) {
+      background-color: rgb(255, 221, 119);
+    }
+  }
 }
 </style>

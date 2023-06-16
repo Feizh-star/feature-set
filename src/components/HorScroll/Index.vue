@@ -8,13 +8,13 @@
       @mousedown="longPress(0, 'down')"
       @mouseup="longPress(0, 'up')"
     >
-      <span class="el-icon-arrow-left"></span>
+      <span>&lt;</span>
     </button>
     <div 
       class="legend-row"
       :class="{ 'is-scroll': actived }"
       ref="scroll"
-      :style="{ height: (parseInt(height) + 17) + 'px' }"
+      :style="{ height: height, 'line-height': height }"
     >
       <div class="scroll-items" ref="scrollItems">
         <slot></slot>
@@ -28,7 +28,7 @@
       @mousedown="longPress(1, 'down')"
       @mouseup="longPress(1, 'up')"
     >
-      <span class="el-icon-arrow-right"></span>
+      <span>&gt;</span>
     </button>
   </div>
 </template>
@@ -45,9 +45,9 @@ const EaseInOutQuad = function (t, b, c, d) {
 }
 
 const requestAnimFrame = (function () {
-  return window.requestAnimFrame ||
-    window.webkitRequestAnimFrame ||
-    window.mozRequestAnimFrame ||
+  return window.requestAnimationFrame ||
+    window.webkitRequestAnimationFrame ||
+    window.mozRequestAnimationFrame ||
     function (callback) { window.setTimeout(callback, 1000 / 60) }
 })()
 
@@ -74,16 +74,15 @@ function scrollTo({ el, to, duration, scrollKey, callback }) {
   let currentTime = 0
   const animateScroll = function () {
     currentTime += increment
-    let val
     if (currentTime < duration) {
-      val = EaseInOutQuad(currentTime, start, change, duration)
+      let val = EaseInOutQuad(currentTime, start, change, duration)
       // debugger
       move(el, scrollKey, val)
       requestAnimFrame(animateScroll)
     } else {
       move(el, scrollKey, to)
       if (callback && typeof (callback) === 'function') {
-        callback(val)
+        callback(to)
       }
     }
   }
@@ -104,6 +103,7 @@ export default defineComponent({
   data() {
     return {
       actived: false,
+      isMoving: false,
     }
   },
   props: {
@@ -114,6 +114,14 @@ export default defineComponent({
     height: {
       type: String,
       default: '32px'
+    },
+    duration: {
+      type: Number,
+      default: 200
+    },
+    itemSelector: {
+      type: String,
+      default: '.scroll-items > .scroll-item'
     }
   },
   mounted() {
@@ -139,7 +147,7 @@ export default defineComponent({
     getScrollWidthArr() {
       const scrollDiv = this.$refs.scroll
       if (!scrollDiv?.scrollWidth) return null
-      const list = scrollDiv.getElementsByClassName('scroll-item')
+      const list = scrollDiv.querySelectorAll(this.itemSelector)
       const itemWidths = Array.prototype.map.call(list, item => item.offsetWidth)
       this.itemWidths = [0]
       for (let i = 1; i < itemWidths.length; i++) {
@@ -160,19 +168,22 @@ export default defineComponent({
     scrollHandler(type) {
       const scrollDiv = this.$refs.scroll
       const scrollItems = this.$refs.scrollItems
-      if (!scrollDiv?.scrollWidth) return null
+      if (!scrollDiv?.scrollWidth || this.isMoving) return null
       const currentScrollLeft = -position(scrollItems, 'translateX')
-      const maxScrollDis = scrollDiv.scrollWidth - scrollDiv.clientWidth
+      const maxScrollDis = scrollItems.offsetWidth - scrollDiv.clientWidth
       if (type) {
         if (currentScrollLeft >= 0 && currentScrollLeft < maxScrollDis) {
           this.scrollIndex++
+          const nextScrollLeft = this.itemWidths[this.scrollIndex]
+          this.isMoving = true
           scrollTo({
             el: scrollItems,
-            to: this.itemWidths[this.scrollIndex],
-            duration: 300,
+            to: nextScrollLeft <= maxScrollDis ? nextScrollLeft : maxScrollDis,
+            duration: this.duration,
             scrollKey: 'translateX',
-            callback: () => {
-              if (Math.abs(scrollDiv.scrollLeft - maxScrollDis) < 1) {
+            callback: (scrollLeft) => {
+              this.isMoving = false
+              if (Math.abs(scrollLeft - maxScrollDis) < 1) {
                 this.$emit('arrived-edge', 1)
               }
             }
@@ -181,13 +192,15 @@ export default defineComponent({
       } else {
         if (currentScrollLeft > 0 && currentScrollLeft <= maxScrollDis) {
           this.scrollIndex--
+          this.isMoving = true
           scrollTo({
             el: scrollItems,
             to: this.itemWidths[this.scrollIndex],
-            duration: 300,
+            duration: this.duration,
             scrollKey: 'translateX',
-            callback: () => {
-              if (Math.abs(scrollDiv.scrollLeft - 0) < 1) {
+            callback: (scrollLeft) => {
+              this.isMoving = false
+              if (Math.abs(scrollLeft - 0) < 1) {
                 this.$emit('arrived-edge', 0)
               }
             }
@@ -236,7 +249,7 @@ export default defineComponent({
     justify-content: center;
     border: none;
     background-color: transparent;
-    color: #ffffff;
+    color: #333333;
     vertical-align: top;
     cursor: pointer;
     font-size: 18px;
@@ -252,8 +265,9 @@ export default defineComponent({
     float: left;
     display: flex;
     justify-content: center;
-    overflow-x: scroll;
-    margin-bottom: -17px;
+    overflow: hidden;
+    // overflow-x: scroll;
+    // margin-bottom: -17px;
     &.is-scroll {
       justify-content: left;
       width: calc(100% - #{$btn-width * 2});

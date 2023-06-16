@@ -57,7 +57,6 @@ export class LMap {
       Reflect.deleteProperty(opts, 'geojson')
     }
     merge(this.options, opts)
-    console.log(this.options, opts)
     this.init(el, mOpts, opts)
       .addWmts('vec_w')
       .addWmts('cva_w')
@@ -123,19 +122,3 @@ export class LMap {
 function getTianWmts(type: TWmts) {
   return `https://t0.tianditu.gov.cn/${type}/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=${type.split('_')[0]}&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=${myKey}`
 }
-
-// function featureCollectionPackage(f: GeoJSON.Feature): GeoJSON.FeatureCollection {
-//   return {
-//     type: "FeatureCollection",
-//     features: [f]
-//   }
-// }
-
-// function fetchGeoJson(adcode: string): Promise<GeoJSON.FeatureCollection> {
-//   return new Promise((resolve, reject) => {
-//     fetch(`/geojson/${adcode}.json`)
-//       .then(res => res.json())
-//       .then(res => resolve(res))
-//       .catch(error => reject(error))
-//   })
-// }
