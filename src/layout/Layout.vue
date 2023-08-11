@@ -14,7 +14,11 @@
             <LayoutBread></LayoutBread>
           </div>
           <div class="ly-main-body-view">
-            <RouterView></RouterView>
+            <RouterView v-slot="{ Component }">
+              <KeepAlive>
+                <component :is="Component" />
+              </KeepAlive>
+            </RouterView>
           </div>
         </div>
       </div>

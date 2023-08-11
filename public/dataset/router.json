@@ -203,7 +203,7 @@
     "component": "Layout",
     "redirect": "readexcel",
     "meta": {
-      "title": "处理表格",
+      "title": "处理文件",
       "hidden": false,
       "alwaysShow": true
     },
@@ -214,6 +214,89 @@
         "component": "Excel/Read/Index.vue",
         "meta": {
           "title": "读取表格内容",
+          "hidden": false
+        }
+      }
+    ]
+  },
+  {
+    "path": "/webgl",
+    "name": "webgl",
+    "component": "Layout",
+    "redirect": "webglstart",
+    "meta": {
+      "title": "WebGL",
+      "hidden": false,
+      "alwaysShow": true
+    },
+    "children": [
+      {
+        "path": "webglstart",
+        "name": "webglstart",
+        "component": "WebGL/Index.vue",
+        "meta": {
+          "title": "测试",
+          "hidden": false
+        }
+      },
+      {
+        "path": "glsubpage",
+        "name": "glsubpage",
+        "component": "RouterSocket",
+        "redirect": "glfirst",
+        "meta": {
+          "title": "功能演示",
+          "hidden": false,
+          "alwaysShow": true
+        },
+        "children": [
+          {
+            "path": "glfirst",
+            "name": "glfirst",
+            "component": "WebGL/subpage/first/Index.vue",
+            "meta": {
+              "title": "基础",
+              "hidden": false
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "/samevue",
+    "name": "samevue",
+    "component": "Layout",
+    "redirect": "samevuepage1",
+    "meta": {
+      "title": "同一组件",
+      "hidden": false,
+      "alwaysShow": true
+    },
+    "children": [
+      {
+        "path": "samevuepage1",
+        "name": "samevuepage1",
+        "component": "SameVuePageTest/Index.vue",
+        "props": {
+          "key": "samevuepage1",
+          "pName": "张三"
+        },
+        "meta": {
+          "title": "页面1",
+          "hidden": false
+        }
+      },
+      {
+        "path": "samevuepage2",
+        "name": "samevuepage2",
+        "component": "SameVuePageTest/Index.vue",
+        "props": {
+          "key": "samevuepage2",
+          "pName": "李四"
+        },
+        "meta": {
+          "title": "页面2",
           "hidden": false
         }
       }

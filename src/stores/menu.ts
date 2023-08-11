@@ -83,6 +83,7 @@ function parseRoutes(routes: Router.MyRawRoute[], parent: string = ''): RouteRec
       name: raw.name,
       meta: raw.meta,
       redirect: raw.redirect || '',
+      props: raw.props ? { ...raw.props } : {},
       children: []
     }
     router.addRoute(parent, parsedRoute)

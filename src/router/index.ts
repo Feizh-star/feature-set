@@ -28,6 +28,13 @@ export const routes: Array<RouteRecordRaw> = [
   //   ]
   // },
   {
+    path: '/hefei',
+    meta: {
+      hidden: true,
+    },
+    component: () => import('@/views/HeFei/Index.vue'),
+  },
+  {
     path: '/:pathMatch(.*)*',
     meta: {
       hidden: true,

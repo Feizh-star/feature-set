@@ -1,8 +1,10 @@
 <script setup lang='ts'>
-import { wordBreak } from 'html2canvas/dist/types/css/property-descriptors/word-break';
-import { ref } from 'vue';
 import * as XLSX from "xlsx"
-
+import geobuf from 'geobuf'
+import Pbf from 'pbf'
+import monitorPoint from './monitor-point.json'
+import monitorList from './list.json'
+import { differenceSet } from '@/utils/tools'
 
 function loadFile(e: Event) {
   const btnEl = e.target as HTMLElement
@@ -28,19 +30,15 @@ async function handleExcel(e: Event) {
 
 const keyMap: any = {
   "序号": "index",
-  "县区": "prefecture",
-  "灾害类型": "disaster_type",
-  "隐患点名称": "disaster_name",
-  "地理位置": "address",
-  "隐患点简介": "brief",
-  "治理情况": "situation",
-  "备注": "remark",
-  "经度": "longitude",
-  "纬度": "latitude",
-  "点位名称": "camera"
+  "名称": "name",
+  "纬度": "lat",
+  "经度": "lng",
+  "网关": "wg",
+  "IP": "ip",
+  "掩码": "ym",
 }
 function parseData(SheetNames: string[], Sheets: { [sheet: string]: XLSX.WorkSheet }) {
-  const sheet2 = Sheets[SheetNames[2]]
+  const sheet2 = Sheets[SheetNames[0]]
   console.log(sheet2)
   const res = []
 
@@ -49,7 +47,7 @@ function parseData(SheetNames: string[], Sheets: { [sheet: string]: XLSX.WorkShe
     let colIndex = 'A'
     const rowObj = {} as { [prop: string]: any }
     rowObj['id'] = `disaster${rowIndex - 1}`
-    while (colIndex.charCodeAt(0) <= 'K'.charCodeAt(0)) {
+    while (colIndex.charCodeAt(0) <= 'G'.charCodeAt(0)) {
       const key = keyMap[sheet2[`${colIndex}1`].v as string]
       rowObj[key] = sheet2[`${colIndex}${rowIndex}`]?.v || ''
       colIndex = String.fromCharCode(colIndex.charCodeAt(0) + 1)
@@ -57,7 +55,29 @@ function parseData(SheetNames: string[], Sheets: { [sheet: string]: XLSX.WorkShe
     res.push(rowObj)
     rowIndex++
   }
+  res.forEach(item => {
+    item.lat = parseFloat(item.lat)
+    item.lng = parseFloat(item.lng)
+  })
   console.log(JSON.stringify(res, undefined, 2))
+}
+
+function loadPng(e: Event) {
+  const btnEl = e.target as HTMLElement
+  const fileInput = btnEl.getElementsByTagName('input')[0]
+  fileInput.click()
+}
+async function handlePng(e: Event) {
+  const fileInput = e.target as HTMLInputElement
+  const file = fileInput.files![0]
+  const data = await file.arrayBuffer()
+  
+  const geojson = geobuf.decode(new Pbf(data))
+  console.log(JSON.stringify(geojson, null, 2))
+}
+function addCode() {
+  const monitorPointList = monitorPoint.map(a => ({ ...a, disaster_type: '监控' }))
+  console.log(JSON.stringify(monitorPointList, null ,2))
 }
 </script>
 
@@ -67,6 +87,11 @@ function parseData(SheetNames: string[], Sheets: { [sheet: string]: XLSX.WorkShe
       <input type="file" name="选择表格" style="display: none;" @click.stop @change="handleExcel">
       选择表格
     </el-button>
+    <el-button @click="loadPng">
+      <input type="file" name="选择图片" style="display: none;" @click.stop @change="handlePng">
+      选择图片
+    </el-button>
+    <el-button @click="addCode">添加id</el-button>
   </div>
 </template>
 
@@ -75,5 +100,6 @@ function parseData(SheetNames: string[], Sheets: { [sheet: string]: XLSX.WorkShe
   width: 100%;
   height: 100%;
   background-color: #fff;
+  color: rgba(236, 128, 220, 0.286);
 }
 </style>

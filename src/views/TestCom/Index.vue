@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import TimeLine from '@/components/company/TimeLine.vue';
+import MyTimeLine from '@/components/TimeLine/TimeLine.vue';
 import HorScroll from '@/components/HorScroll/IndexV3.vue'
 
 
@@ -136,6 +137,9 @@ function confirmFunc() {
         confirm-text="确定"
         @confirm="confirmFunc"
       ></DatePicker>
+    </div>
+    <div style="margin-top: 30px; width: 100%; height: 92px;">
+      <MyTimeLine />
     </div>
   </div>
 </template>

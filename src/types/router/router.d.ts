@@ -8,6 +8,7 @@ declare namespace Router {
     redirect?: string
     hidden?: boolean
     meta?: RouteMeta
+    props?: { [p: string]: any }
     children?: Array<MyRawRoute> | null
   }
 }
