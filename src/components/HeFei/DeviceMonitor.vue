@@ -1,6 +1,11 @@
 <script setup lang="ts">
+import moment from "moment";
 import BlockHeader from "@/components/HeFei/BlockHeader.vue";
 import DeviceChart from "@/components/HeFei/MonitorChart/DeviceChart.vue";
+import { radarMonitorApi } from "./js/api"
+
+const userYYYYMMDDHHmm = "YYYY-MM-DD HH:mm"
+const userYYYYMMDDHHmmss = "YYYY-MM-DD HH:mm:ss"
 
 const props = withDefaults(defineProps<{
   title?: string;
@@ -10,8 +15,37 @@ const props = withDefaults(defineProps<{
   showHeader: false,
 })
 // 时间
-const time = ref("2023-08-02 11:00");
+const time = ref("");
+// 数据
+const deviceList = ref<Array<{
+  title: string,
+  data: Array<{name: string; value: number}>
+}>>([])
 
+async function getData() {
+  try {
+    const res: any = await radarMonitorApi();
+    if (res.code != 200) throw new Error("radarMonitorApi");
+    const updateTime = res.data?.updateTime;
+    const radarList = res.data?.radarList || []
+    time.value = updateTime ? moment(res.data.updateTime, userYYYYMMDDHHmmss).format(userYYYYMMDDHHmm) : "";
+    deviceList.value = radarList.map((item: any) => {
+      return {
+        title: item.radarName || "",
+        data: [
+          { name: "数据到报率", value: parseFloat(parseFloat(item.arrivalRate)?.toFixed(1) || "0") },
+          { name: "数据准确率", value: parseFloat(parseFloat(item.timeRate)?.toFixed(1) || "0") },
+          { name: "数据利用率", value: parseFloat(parseFloat(item.availableRate)?.toFixed(1) || "0") },
+        ]
+      }
+    })
+  } catch (error) {
+    console.error(error)
+  }
+}
+onMounted(() => {
+  getData()
+})
 </script>
 
 <template>
@@ -24,9 +58,11 @@ const time = ref("2023-08-02 11:00");
       </div>
       <div class="main-content">
         <div class="device-list">
-          <div class="device-item" v-for="item in 3" :key="item">
-            <DeviceChart :title="'臭氧激光雷达'" :data="[]"/>
-          </div>
+          <!-- <el-scrollbar> -->
+            <div class="device-item" v-for="item in deviceList" :key="item.title">
+              <DeviceChart :title="item.title" :data="item.data"/>
+            </div>
+          <!-- </el-scrollbar> -->
         </div>
       </div>
     </div>
@@ -61,11 +97,8 @@ const time = ref("2023-08-02 11:00");
       min-height: 0;
       .device-list {
         height: 100%;
-        display: flex;
-        flex-direction: column;
         .device-item {
-          flex: 1;
-          min-height: 0;
+          height: 135px;
           padding-top: 10px;
         }
       }

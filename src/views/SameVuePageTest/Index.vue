@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { ref } from 'vue'
+import { useMouseInElement } from '@vueuse/core'
 const props = defineProps<{
   pName: string
 }>()
@@ -12,6 +14,19 @@ function onSubmit() {
 onMounted(() => {
   console.log('sameVue!');
   formInline.user = props.pName
+})
+
+const target = ref(null)
+const mx = ref(0)
+const my = ref(0)
+onMounted(() => {
+  const { x, y } = useMouseInElement(target)
+  watch(x, (newX) => {
+    mx.value = newX
+  })
+  watch(y, (newY) => {
+    my.value = newY
+  })
 })
 </script>
 
@@ -31,6 +46,11 @@ onMounted(() => {
         <el-button type="primary" @click="onSubmit">查询</el-button>
       </el-form-item>
     </el-form>
+    <div ref="target" class="test-mouse">
+      <h1>Hello world</h1>
+      <div>{{ mx }}</div>
+      <div>{{ my }}</div>
+    </div>
   </div>
 </template>
 
@@ -42,5 +62,10 @@ onMounted(() => {
   background-color: #fff;
   display: flex;
   flex-direction: column;
+}
+.test-mouse {
+  width: 200px;
+  height: 200px;
+  border: 1px solid #efefef;
 }
 </style>

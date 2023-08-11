@@ -33,7 +33,7 @@ export function createBackgroud(r: number) {
           fill: "none",
           stroke: "#fff",
           lineWidth: 1,
-          strokeOpacity: 0.1,
+          strokeOpacity: 0.3,
         },
       })
     );
@@ -52,7 +52,7 @@ export function getDataPosition(data: number[], max: number, r: number) {
   const dAngle = (Math.PI * 2) / data.length;
   const datas: [number, number][] = [];
   const labels: [number, number][] = [];
-  const l = r + 15;
+  const l = r + 20;
   data.forEach((e, i) => {
     const d = (e / max) * r;
     const a = dAngle * i;

@@ -1,6 +1,6 @@
 <template>
   <div class="module">
-    <img src="./assets/title.svg" alt="" />
+    <div class="title">预警数量统计</div>
     <div class="row">
       <div class="pie" ref="refPie">
         <div class="circle">
@@ -9,7 +9,7 @@
         </div>
         <div
           class="tooltip"
-          v-if="target"
+          v-if="target && !isOutside"
           :style="{
             left: mousePosition[0] + 10 + 'px',
             top: mousePosition[1] - 10 + 'px',
@@ -42,9 +42,11 @@
   </div>
 </template>
 <script setup lang="ts">
-import { computed, onMounted, ref, Ref, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
+import type { Ref } from "vue";
+import { useMouseInElement } from '@vueuse/core'
 import { PieChart } from "./PieChart";
-import { DataItem } from "./type";
+import type { DataItem } from "./type";
 
 const props = defineProps<{
   data: DataItem[];
@@ -73,6 +75,7 @@ const sum = computed(() => {
   return res;
 });
 const refPie: Ref<HTMLDivElement | null> = ref(null);
+const { isOutside } = useMouseInElement(refPie)
 
 let pieChart: PieChart;
 onMounted(() => {
@@ -99,6 +102,14 @@ onMounted(() => {
 </script>
 <style lang="less" scoped>
 .module {
+  .title {
+    padding: 10px 0;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 18px;
+    text-shadow: 0px 0px 10px rgba(78, 180, 255, 0.5);
+  }
   .row {
     height: 210px;
     .pie {

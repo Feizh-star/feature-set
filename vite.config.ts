@@ -44,5 +44,12 @@ export default defineConfig({
   },
   server: {
     host: true,
+    proxy: {
+      '/hefeiapi': {
+        target: 'http://home.zsl0.com:20004/api/',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/hefeiapi/, ''),
+      },
+    }
   }
 })

@@ -1,5 +1,5 @@
 <script setup lang='ts'>
-import { wordBreak } from 'html2canvas/dist/types/css/property-descriptors/word-break';
+// import { wordBreak } from 'html2canvas/dist/types/css/property-descriptors/word-break';
 import { ref } from 'vue';
 import * as XLSX from "xlsx"
 

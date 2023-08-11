@@ -145,6 +145,50 @@
     ]
   },
   {
+    "path": "/d3",
+    "name": "d3",
+    "component": "Layout",
+    "redirect": "d3start",
+    "meta": {
+      "title": "d3",
+      "hidden": false,
+      "alwaysShow": true
+    },
+    "children": [
+      {
+        "path": "d3start",
+        "name": "d3start",
+        "component": "D3/Index.vue",
+        "meta": {
+          "title": "d3测试",
+          "hidden": false
+        }
+      },
+      {
+        "path": "dsubpage",
+        "name": "dsubpage",
+        "component": "RouterSocket",
+        "redirect": "dcircle",
+        "meta": {
+          "title": "功能演示",
+          "hidden": false,
+          "alwaysShow": true
+        },
+        "children": [
+          {
+            "path": "dcircle",
+            "name": "dcircle",
+            "component": "D3/subpage/Dcircle/Index.vue",
+            "meta": {
+              "title": "圆",
+              "hidden": false
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
     "path": "/maptest",
     "name": "maptest",
     "component": "Layout",

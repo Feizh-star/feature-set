@@ -5,9 +5,12 @@ import LabelSelect from "@/components/HeFei/LabelSelect.vue";
 import BaseChart from "@/components/HeFei/BaseChart.vue";
 import type * as echarts from "echarts"
 import { getIcon } from "./js/getWeatherIcon"
+import { predictionHour3Api } from "./js/api"
+import { HefeiCounty } from "./js/area"
 
+const userYYYYMMDDHHmm = "YYYY-MM-DD HH:mm"
+const userYYYYMMDDHHmmss = "YYYY-MM-DD HH:mm:ss"
 const pinPath = 'path://M108,151H94c-1.08-.37-2.14-.82-3.24-1.08-20.47-5-33.44-17.69-38.42-38.1-1-3.88-2.49-4.64-6-4.63-15.12.06-30.24-.11-45.36-.19V94c15-.08,30-.29,44.92-.17,3.9,0,5.65-.84,6.75-5,5-18.94,17.3-30.95,36.13-36.32,1.73-.5,3.71-.17,5.2-1.49h14a21.71,21.71,0,0,0,2.76,1c20.16,4.63,33.16,16.92,38.56,36.81,1.14,4.18,2.87,5,6.76,5,15-.12,29.95.09,44.92.17v13c-15.12.08-30.24.25-45.36.19-3.49,0-5.16.69-6,4.63-2.86,13.88-10.83,24.35-22.74,32C121.09,147.51,114.45,149,108,151Z'
-const dateFormatter = "YYYYMMDDHHmm"
 const axisLabelColor = "#DCE4F5"; // 坐标轴文本颜色
 const legendAndLabelColor = "#ADB7CB"; // 图例和折线图label文本颜色
 const labelBorderColor = "#020B17"; // 折线图label文本边框颜色
@@ -23,23 +26,20 @@ const props = withDefaults(defineProps<{
   showHeader: false,
 })
 // 时间
-const time = ref("2023-08-03 11:00");
+const time = ref("");
 
 // 站点选择
-const monitorSel = ref();
-const monitorOptions = ref([
-  { value: 'ss', label: '蜀山站', },
-]);
+const monitorSel = ref('340122');
+const monitorOptions = ref(HefeiCounty);
 
-const data = [
-  {time: '2023080305', tem: 31.7, rain: 0.5, winDir: "偏东风", winLevel: 3, weather: "晴"},
-  {time: '2023080308', tem: 22.5, rain: 3.5, winDir: "偏东风", winLevel: 3, weather: "小雨"},
-  {time: '2023080311', tem: 20, rain: 4.6, winDir: "偏东风", winLevel: 3, weather: "中雨"},
-  {time: '2023080314', tem: 15, rain: 11.6, winDir: "偏东风", winLevel: 3, weather: "多云"},
-  {time: '2023080317', tem: 8, rain: 0, winDir: "偏东风", winLevel: 3, weather: "小雪"},
-  {time: '2023080320', tem: 7, rain: 6, winDir: "偏东风", winLevel: 3, weather: "大雨"},
-  {time: '2023080323', tem: 11, rain: 3, winDir: "偏东风", winLevel: 3, weather: "中雨"},
-]
+const data = ref<Array<{
+  time: string;
+  tem: number;
+  rain: number;
+  winDir: string;
+  winLevel: string;
+  weather: string;
+}>>([])
 const option = {
   legend: {
     data: [
@@ -50,6 +50,9 @@ const option = {
       color: legendAndLabelColor,
     }
   },
+  tooltip: {
+    show: true,
+  },
   xAxis: {
     type: 'category',
     data: [],
@@ -58,10 +61,10 @@ const option = {
       formatter: function (value: string) {
         const list = value.split(",")
         const time = list[0]
-        let hour = moment(time, dateFormatter).hour()
-        let minute = moment(time, dateFormatter).minute()
+        let hour = moment(time, userYYYYMMDDHHmmss).hour()
+        let minute = moment(time, userYYYYMMDDHHmmss).minute()
         const timeLabel = `${hour < 10 ? `0${hour}` : hour}:${minute < 10 ? `0${minute}` : minute}`
-        return `{time|${timeLabel}}\n{dir|${list[1]}}\n{level|${list[2]}级}`
+        return `{time|${timeLabel}}\n{dir|${list[1]}}\n{level|${list[2]}}`
       },
       rich: {
         time: {
@@ -125,6 +128,9 @@ const option = {
         textBorderColor : labelBorderColor,
         textBorderWidth : 3,
       },
+      tooltip: {
+        show: false,
+      },
     },
     {
       data: [],
@@ -135,6 +141,15 @@ const option = {
       itemStyle: {
         color: barColor,
         borderRadius: [7, 7, 0, 0],
+      },
+      tooltip: {
+        formatter: function (data: any) {
+          const time = data.name.split(",")[0]
+          let hour = moment(time, userYYYYMMDDHHmmss).hour()
+          let minute = moment(time, userYYYYMMDDHHmmss).minute()
+          const timeLabel = `${hour < 10 ? `0${hour}` : hour}:${minute < 10 ? `0${minute}` : minute}`
+          return `${timeLabel}<br/>${data.seriesName}: ${data.value.toFixed(2)}mm`
+        },
       }
     }
   ]
@@ -161,6 +176,31 @@ function setData(chart: echarts.ECharts, data: Array<any>) {
     ]
   })
 }
+
+async function getData() {
+  try {
+    const res: any = await predictionHour3Api();
+    if (res.code != 200) throw new Error("predictionHour3Api");
+    const updateTime = res.data?.updateTime;
+    const weatherList = res.data?.weatherList || []
+    time.value = updateTime ? moment(res.data.updateTime, userYYYYMMDDHHmmss).format(userYYYYMMDDHHmm) : "";
+    data.value = weatherList.map((item: any) => {
+      return {
+        time: item.predictionTime,
+        tem: parseFloat(parseFloat(item.tem)?.toFixed(1) || "0"),
+        rain: parseFloat(parseFloat(item.tp)?.toFixed(2) || "0"),
+        winDir: item.windDirection,
+        winLevel: item.windLevel,
+        weather: "小雨"
+      }
+    })
+  } catch (error) {
+    console.error(error)
+  }
+}
+watch(monitorSel, (newVal) => {
+  getData()
+}, { immediate: true })
 </script>
 
 <template>
@@ -170,7 +210,7 @@ function setData(chart: echarts.ECharts, data: Array<any>) {
     </div>
     <div class="block-body">
       <div class="station-selection">
-        <LabelSelect label="站点选择：" v-model="monitorSel">
+        <LabelSelect label="区域选择：" v-model="monitorSel">
           <el-option
             v-for="item in monitorOptions"
             :key="item.value"

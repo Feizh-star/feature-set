@@ -1,6 +1,11 @@
 <script setup lang="ts">
+import moment from "moment";
 import BlockHeader from "@/components/HeFei/BlockHeader.vue";
 import DiskChart from "@/components/HeFei/MonitorChart/DiskChart.vue";
+import { diskMonitorApi } from "./js/api"
+
+const userYYYYMMDDHHmm = "YYYY-MM-DD HH:mm"
+const userYYYYMMDDHHmmss = "YYYY-MM-DD HH:mm:ss"
 
 const props = withDefaults(defineProps<{
   title?: string;
@@ -10,8 +15,42 @@ const props = withDefaults(defineProps<{
   showHeader: false,
 })
 // 时间
-const time = ref("2023-08-02 11:00");
+const time = ref("");
+// 数据
+const deviceList = ref<Array<{
+  ip: string;
+  title: string;
+  total: number;
+  used: number;
+  residue: number;
+}>>([])
 
+async function getData() {
+  try {
+    const res: any = await diskMonitorApi();
+    if (res.code != 200) throw new Error("diskMonitorApi");
+    const updateTime = res.data?.updateTime;
+    const serverList = res.data?.serverList || []
+    time.value = updateTime ? moment(res.data.updateTime, userYYYYMMDDHHmmss).format(userYYYYMMDDHHmm) : "";
+    deviceList.value = serverList.map((item: any) => {
+      const total = parseFloat(parseFloat(item.totalCapacity)?.toFixed(0) || "1")
+      const residue = parseFloat(parseFloat(item.surplusCapacity)?.toFixed(0) || "1")
+      const used = parseFloat((total - residue)?.toFixed(0) || "0")
+      return {
+        ip: item.ip || "",
+        title: item.serverName || "",
+        total: total,
+        used: used,
+        residue: residue
+      }
+    })
+  } catch (error) {
+    console.error(error)
+  }
+}
+onMounted(() => {
+  getData()
+})
 </script>
 
 <template>
@@ -24,9 +63,11 @@ const time = ref("2023-08-02 11:00");
       </div>
       <div class="main-content">
         <div class="device-list">
-          <div class="device-item" v-for="item in 3" :key="item">
-            <DiskChart :data="{ used: 45, residue: 55 }"/>
-          </div>
+          <el-scrollbar>
+            <div class="device-item" v-for="item in deviceList" :key="item.title">
+              <DiskChart :ip="item.ip" :title="item.title" :total="item.total" :used="item.used" :residue="item.residue"/>
+            </div>
+          </el-scrollbar>
         </div>
       </div>
     </div>
@@ -61,11 +102,8 @@ const time = ref("2023-08-02 11:00");
       min-height: 0;
       .device-list {
         height: 100%;
-        display: flex;
-        flex-direction: column;
         .device-item {
-          flex: 1;
-          min-height: 0;
+          height: 135px;
           padding-top: 10px;
         }
       }

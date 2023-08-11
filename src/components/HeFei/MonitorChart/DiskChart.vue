@@ -10,11 +10,23 @@ const residueImg = new Image();
 residueImg.src = residueSrc;
 
 const props = defineProps<{
-  data: { used: number, residue: number }
+  ip: string;
+  title: string;
+  total: number;
+  used: number;
+  residue: number;
 }>()
+
+const usedRate = computed(() => {
+  return Math.round(props.used / props.total * 100)
+})
+const residueRate = computed(() => {
+  return Math.round(props.residue / props.total * 100)
+})
 
 const option = {
   tooltip: {
+    show: false,
     trigger: 'item',
     formatter: '{a}<br/>{b}:{c}',
   },
@@ -75,31 +87,31 @@ function setData(chart: echarts.ECharts, data: any) {
 <template>
   <div class="disk-chart">
     <div class="cycle-chart">
-      <BaseChart :data="data" :options="option" @data-change="setData"/>
+      <BaseChart :data="{ used, residue }" :options="option" @data-change="setData"/>
       <div class="total-info">
-        <div class="total-gb">1000GB</div>
+        <div class="total-gb">{{ total }}GB</div>
         <div class="total-label">总容量</div>
       </div>
     </div>
     <div class="disk-info">
       <div class="server-title">
-        <span>{{ '综合气象大数据应用服务机器' }}</span>
+        <span>{{ title || "" }}</span>
       </div>
       <div class="server-ip">
-        <span>IP：{{ '192.168.1.1' }}</span>
+        <span>IP：{{ ip || "" }}</span>
       </div>
       <div class="server-legend">
         <div class="legend-item">
           <div class="used-icon"></div>
           <span class="legend-type">已用:</span>
-          <span>22G</span>
-          <span class="legend-rate">22%</span>
+          <span>{{ used }}G</span>
+          <span class="legend-rate">{{ usedRate }}%</span>
         </div>
         <div class="legend-item">
           <div class="residue-icon"></div>
           <span class="legend-type">剩余:</span>
-          <span>78G</span>
-          <span class="legend-rate">78%</span>
+          <span>{{ residue }}G</span>
+          <span class="legend-rate">{{ residueRate }}%</span>
         </div>
       </div>
     </div>
@@ -169,14 +181,16 @@ function setData(chart: echarts.ECharts, data: any) {
       .legend-item {
         display: flex;
         align-items: flex-end;
+        white-space: nowrap;
+        flex-wrap: nowrap;
         & + .legend-item {
-          padding-left: 15px;
-        }
-        .legend-type {
           padding-left: 8px;
         }
+        .legend-type {
+          padding-left: 4px;
+        }
         .legend-rate {
-          padding-left: 10px;
+          padding-left: 6px;
           font-size: var(--big-fontsize);
         }
       }

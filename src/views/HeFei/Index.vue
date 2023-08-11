@@ -13,19 +13,11 @@ const monitorSel = ref();
 const monitorOptions = ref([
   {
     value: '选项1',
-    label: '黄金糕',
+    label: '选项1',
   },
   {
     value: '选项2',
-    label: '双皮奶',
-  },
-  {
-    value: '选项3',
-    label: '蚵仔煎',
-  },
-  {
-    value: '选项4',
-    label: '龙须面',
+    label: '选项2',
   },
 ]);
 
@@ -206,10 +198,10 @@ function switchProduct() {
         height: 684px;
       }
       .device-monitor {
-        height: 466px;
+        height: 736px;
       }
       .disk-monitor {
-        height: 466px;
+        height: 196px;
       }
     }
   }

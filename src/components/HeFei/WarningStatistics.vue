@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import BlockHeader from "@/components/HeFei/BlockHeader.vue";
 import LabelSelect from "@/components/HeFei/LabelSelect.vue";
-import BaseChart from "@/components/HeFei/BaseChart.vue";
 import WarningCycle from "@/components/HeFei/WarningStatistic/index.vue";
 import warningRadar from "@/components/HeFei/DisasterClassificationStatistics/index.vue";
-import type * as echarts from "echarts"
 
 const props = withDefaults(defineProps<{
   title?: string;
@@ -43,6 +41,7 @@ const radarData = ref([
   { color: '#fcce16', name: '大雾', value: 80 },
   { color: '#f04864', name: '干旱', value: 70 },
   { color: '#c4c4c4', name: '高温', value: 100 },
+  { color: '#c4c4c4', name: '雷电', value: 80 },
 ])
 </script>
 
@@ -82,7 +81,6 @@ const radarData = ref([
         </div>
         <div class="type-statistics">
           <warningRadar :max="100" :datas="radarData"/>
-          <!-- <BaseChart :data="radarData" :options="option" @data-change="setData"/> -->
         </div>
       </div>
     </div>
@@ -139,7 +137,6 @@ const radarData = ref([
       .type-statistics {
         height: 58%;
         padding-top: 10px;
-        position: relative;
       }
     }
   }

@@ -2,7 +2,7 @@
 import * as XLSX from "xlsx"
 import geobuf from 'geobuf'
 import Pbf from 'pbf'
-import monitorPoint from './monitor-point.json'
+// import monitorPoint from './monitor-point.json'
 import monitorList from './list.json'
 import { differenceSet } from '@/utils/tools'
 

@@ -7,17 +7,12 @@ const props = defineProps<{
   title: string;
   data: Array<{name: string; value: number}>
 }>()
-
-const data = [
-  { name: "数据到报率", value: 1 },
-  { name: "数据准确率", value: 0.8 },
-  { name: "数据利用率", value: 0.5 },
-]
 const option = {
   title: {
     show: false
   },
   tooltip: {
+    show: false,
     trigger: 'axis',
     valueFormatter: (value: number) => value + '%',
     axisPointer: {
