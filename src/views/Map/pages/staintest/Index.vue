@@ -34,8 +34,8 @@ onMounted(() => {
 
 const colorsList = Object.keys(colors)
 const scalesList = Object.keys(scales)
-const colorEleType = ref('pre_6')
-const scaleEleType = ref('pre_6')
+const colorEleType = ref('pre_1')
+const scaleEleType = ref('pre_1')
 function loadFile(e: Event) {
   const btnEl = e.target as HTMLElement
   const fileInput = btnEl.getElementsByTagName('input')[0]

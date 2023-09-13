@@ -5,6 +5,7 @@ import Pbf from 'pbf'
 // import monitorPoint from './monitor-point.json'
 import monitorList from './list.json'
 import { differenceSet } from '@/utils/tools'
+import { parseSubway } from './hefeiditie'
 
 function loadFile(e: Event) {
   const btnEl = e.target as HTMLElement
@@ -25,7 +26,8 @@ async function handleExcel(e: Event) {
   const data = await file.arrayBuffer()
   const workbook = XLSX.read(data)
   
-  parseData(workbook.SheetNames, workbook.Sheets)
+  // parseData(workbook.SheetNames, workbook.Sheets)
+  parseSubway(workbook.SheetNames, workbook.Sheets)
 }
 
 const keyMap: any = {

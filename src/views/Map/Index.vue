@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import * as L from 'leaflet'
-// import { MapHcMin } from 'hcl'
+import { MapHcMin } from 'hcl'
 
 type TWmts = 'vec_w' | 'cva_w'
 const myKey = '42139ec25fe7ae771affe917de5c9ecf'
@@ -140,16 +140,16 @@ onMounted(() => {
   })
   // L.tileLayer(getTianWmts('vec_w'), {}).addTo(mapIns.map)
   // L.tileLayer(getTianWmts('cva_w'), {}).addTo(mapIns.map)
-  // let hcmap = new MapHcMin({
-  //   style: mapStyle,
-  //   // 瓦片越大，地图越不精细,当前为固定的，如需要更改，请提需求
-  //   tileSize: 1024,
-  //   // 地图更新频率，越小，瓦片化越小，但是浏览器性能消耗变高
-  //   updateInterval: 50,
-  //   //地图向外延申像素，越大，瓦片化越小，但是浏览器消耗变高
-  //   wrapSize: 400,
-  //   url: ''
-  // }).addTo(mapIns.map)
+  let hcmap = new MapHcMin({
+    style: mapStyle,
+    // 瓦片越大，地图越不精细,当前为固定的，如需要更改，请提需求
+    tileSize: 1024,
+    // 地图更新频率，越小，瓦片化越小，但是浏览器性能消耗变高
+    updateInterval: 50,
+    //地图向外延申像素，越大，瓦片化越小，但是浏览器消耗变高
+    wrapSize: 400,
+    url: ''
+  }).addTo(mapIns.map)
 })
 </script>
 

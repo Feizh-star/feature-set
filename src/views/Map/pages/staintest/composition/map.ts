@@ -30,10 +30,11 @@ const defaultOpts = {
   layers: []
 }
 
-export class LMap {
-  private map!: L.Map
+export class LFMap {
+  private lmap!: L.Map
   private options: LMapOption = defaultOpts
   private layerGroups: { [p: string]: L.LayerGroup } = {}
+  get map() { return this.lmap }
 
   constructor(el: HTMLElement, mOpts: L.MapOptions = {}, opts: TLMapOption = {}) {
     merge(this.options, opts)
@@ -45,7 +46,7 @@ export class LMap {
   }
 
   private init(el: HTMLElement, mOpts: L.MapOptions, opts: IAnyObject) {
-    this.map = L.map(el, {
+    this.lmap = L.map(el, {
       center: mOpts.center ? mOpts.center : [32.986549, 107.797788], // [32.986549, 107.797788], [33.874936, 113.5020695]
       zoom: mOpts.zoom ? mOpts.zoom : 4, // 7
       maxZoom: 18,
@@ -59,11 +60,11 @@ export class LMap {
     return this
   }
   private addWmts(type: TWmts) {
-    L.tileLayer(getTianWmts(type), {}).addTo(this.map)
+    L.tileLayer(getTianWmts(type), {}).addTo(this.lmap)
     return this
   }
   public latLngToPoint(latLng: [number, number]) {
-    return this.map.latLngToContainerPoint(latLng)
+    return this.lmap.latLngToContainerPoint(latLng)
   }
   public setView(f: GeoJSON.Feature) {
     const border = featureCollectionPackage(f)
@@ -71,7 +72,7 @@ export class LMap {
     const [lngMin, latMin, lngMax, latMax] = boundary
     // console.log((latMin + latMax) / 2, (lngMin + lngMax) / 2)
     const lBoundary = [[latMin, lngMin], [latMax, lngMax]] as L.LatLngBoundsExpression
-    this.map.fitBounds(lBoundary)
+    this.lmap.fitBounds(lBoundary)
   }
   
   initPanes() {

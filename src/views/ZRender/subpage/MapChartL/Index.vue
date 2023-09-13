@@ -23,7 +23,35 @@ onMounted(() => {
         fillOpacity: 0.8
       },
       shadowBorders: {
-        borderShapes: [ { enable: false }, { enable: false }, { enable: false }, ]
+        borderShapes: [
+          {
+            enable: true,
+            offsetX: 3, 
+            offsetY: 3, 
+            z: 30,
+            style: {
+              stroke: '#bcc6db',
+              fill: 'transparent',
+              lineWidth: 4,
+              shadowBlur: 0,
+              shadowColor: '#c800ff'
+            }
+          },
+          {
+            enable: true,
+            offsetX: 6,
+            offsetY: 6,
+            z: 20,
+            style: {
+              stroke: '#a1b7e5',
+              fill: 'transparent',
+              lineWidth: 6,
+            }
+          },
+          {
+            enable: false,
+          }
+        ]
       }
     },
     drill: {
