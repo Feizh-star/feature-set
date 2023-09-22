@@ -254,6 +254,15 @@
               "title": "hcl色斑图",
               "hidden": false
             }
+          },
+          {
+            "path": "plugintest",
+            "name": "plugintest",
+            "component": "Map/pages/plugintest/Index.vue",
+            "meta": {
+              "title": "插件测试",
+              "hidden": false
+            }
           }
         ]
       }

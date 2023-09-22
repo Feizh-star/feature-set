@@ -30,7 +30,7 @@ const defaultOpts = {
   layers: []
 }
 
-export class LFMap {
+export class LMap {
   private lmap!: L.Map
   private options: LMapOption = defaultOpts
   private layerGroups: { [p: string]: L.LayerGroup } = {}

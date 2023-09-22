@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import HorScroll from '@/components/HorScroll/IndexV3.vue'
 import TimeSquence from './components/TimeSquence.vue'
+import WindEChart from './components/WindEChart.vue'
 
 
 
@@ -70,6 +71,9 @@ function myClickRemove() {
       <el-button @click="myClickAddDom">添加DOM</el-button>
       <el-button @click="myClickRemove">移除DOM</el-button>
     </div>
+    <div class="wind-shaft-container">
+      <WindEChart />
+    </div>
     <div id="test-root">
     </div>
   </div>
@@ -79,6 +83,7 @@ function myClickRemove() {
 .test-timeline {
   height: 100%;
   background-color: #fff;
+  overflow-y: auto;
 }
 .hor-scroll-test {
   border: 1px solid #efefef;
@@ -91,5 +96,9 @@ function myClickRemove() {
       background-color: rgb(255, 221, 119);
     }
   }
+}
+.wind-shaft-container {
+  display: flex;
+  justify-content: center;
 }
 </style>

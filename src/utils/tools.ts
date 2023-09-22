@@ -211,3 +211,38 @@ export function curAreaImageByElements(lt: HTMLElement, rb: HTMLElement, filenam
     download(filename as string, imgURL);
   });
 }
+
+//最大高度： 三角 * 2 + 长 * 3 + 短 * 4 = 35 * 2 + 7 * 15 = 175
+//最小高度： 80
+//竖杆 lingLength * 15 + triangleLength * 35 Math.max(x, )
+//长杆 M0 ${i * 15} L35 ${i * 15} L35 ${i * 15 + 5} L0 ${i * 15 + 5}z
+//短杆 M0 ${i * 15} L20 ${i * 15} L20 ${i * 15 + 5} L0 ${i * 15 + 5}z
+//三角 M0 ${i * 35} L45 ${i * 35} L0 ${i * 35 + 30} L0 ${i * 35 + 25} L28 ${i * 35 + 5} L0 ${i * 35 + 5}z
+export function getWindPath(speed: number) {
+  const triGen = (i: number, y = 0) =>
+    `M0 ${i * 35 + y} L45 ${i * 35 + y} L0 ${i * 35 + 30 + y} L0 ${i * 35 + 25 + y} L28 ${i * 35 + 5 + y} L0 ${
+      i * 35 + 5 + y
+    }z `
+  const longGen = (i: number, y = 0) =>
+    `M0 ${i * 15 + y} L35 ${i * 15 + y} L35 ${i * 15 + 5 + y} L0 ${i * 15 + 5 + y}z `
+  const shortGen = (i: number, y = 0) =>
+    `M0 ${i * 15 + y} L20 ${i * 15 + y} L20 ${i * 15 + 5 + y} L0 ${i * 15 + 5 + y}z `
+  const triConut = Math.floor(speed % 20 >= 19 ? speed / 20 + 1 : speed / 20)
+  const longResidue = speed - triConut * 20 < 0 ? 0 : speed - triConut * 20
+  const longCount = Math.floor(longResidue % 4 >= 3 ? longResidue / 4 + 1 : longResidue / 4)
+  const shortResidue = longResidue - longCount * 4 < 0 ? 0 : longResidue - longCount * 4
+  const shortCount = Math.floor(shortResidue % 2 >= 1 ? shortResidue / 2 + 1 : shortResidue / 2)
+  let path = ''
+  for (let i = 0; i < triConut; i++) {
+    path += triGen(i)
+  }
+  for (let i = 0; i < longCount; i++) {
+    path += longGen(i, triConut * 35)
+  }
+  for (let i = 0; i < shortCount; i++) {
+    path += shortGen(i, triConut * 35 + longCount * 15)
+  }
+  const poleHeight = Math.min(Math.max(triConut * 35 + (longCount + shortCount) * 15 + 10, 80), 175)
+  path += `M0 ${poleHeight} L0 0 L5 0 L5 ${poleHeight}z`
+  return path
+}
