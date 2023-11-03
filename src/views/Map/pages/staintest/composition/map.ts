@@ -41,8 +41,8 @@ export class LMap {
     this.init(el, mOpts, opts)
       .initPanes()
       .initLayers()
-      .addWmts('vec_w')
-      .addWmts('cva_w')
+      // .addWmts('vec_w')
+      // .addWmts('cva_w')
   }
 
   private init(el: HTMLElement, mOpts: L.MapOptions, opts: IAnyObject) {

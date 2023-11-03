@@ -75,6 +75,8 @@ function myClickRemove() {
       <WindEChart />
     </div>
     <div id="test-root">
+      <!-- <img src="@/assets/images/error.png" alt="" /> -->
+      <span>123</span>
     </div>
   </div>
 </template>
@@ -100,5 +102,19 @@ function myClickRemove() {
 .wind-shaft-container {
   display: flex;
   justify-content: center;
+}
+#test-root {
+  height: 50px;
+  width: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  > img {
+    box-shadow: 3px 3px 5px 1px #333;
+  }
+  color: #aaa;
+  font-size: 30px;
+  font-weight: 700;
+  text-shadow: 3px 3px 1px #333;
 }
 </style>

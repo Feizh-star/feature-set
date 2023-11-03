@@ -394,5 +394,48 @@
         }
       }
     ]
+  },
+  {
+    "path": "/canvastest",
+    "name": "canvastest",
+    "component": "Layout",
+    "redirect": "canvasapitest",
+    "meta": {
+      "title": "Canvas",
+      "hidden": false,
+      "alwaysShow": true
+    },
+    "children": [
+      {
+        "path": "canvasapitest",
+        "name": "canvasapitest",
+        "component": "Canvas/Index.vue",
+        "meta": {
+          "title": "基础测试",
+          "hidden": false
+        }
+      },
+      {
+        "path": "canvassubpage",
+        "name": "canvassubpage",
+        "component": "RouterSocket",
+        "meta": {
+          "title": "功能测试",
+          "hidden": false,
+          "alwaysShow": true
+        },
+        "children": [
+          {
+            "path": "canvastransform",
+            "name": "canvastransform",
+            "component": "Canvas/pages/Transform.vue",
+            "meta": {
+              "title": "变换",
+              "hidden": false
+            }
+          }
+        ]
+      }
+    ]
   }
 ]

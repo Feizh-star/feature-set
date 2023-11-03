@@ -4,6 +4,7 @@ import datepickertest from './components/datepickerTest.vue'
 import MyDatePicker from './components/MyDatePickerGf.vue'
 import type { TypeString } from './components/MyDatePickerGf.vue'
 import { dateToString } from '@/utils/moment'
+import vLimitNumber from '@/directives/vLimitNumber.js'
 
 const selDate = ref(['2023-05-09 08:00'])
 const endDate = '2023-05-09 08:00'
@@ -41,6 +42,17 @@ const types = ['datetime', 'week', 'month', 'year', 'ten', 'quarter']
 
 const value6 = ref(null)
 watch(value6, (newVal) => {
+  console.log(newVal)
+})
+
+const numberInput = reactive({
+  altitude: ''
+})
+const numberInputRef = ref('')
+const limitObj = { data: numberInputRef, key: 'value', p: 2, min: 0, max: 999999 }
+const numberInputRef1 = ref('')
+const limitObj1 = { data: numberInputRef1, key: 'value', p: 2, min: 0, max: 999999 }
+watch(numberInputRef, newVal => {
   console.log(newVal)
 })
 </script>
@@ -88,6 +100,27 @@ watch(value6, (newVal) => {
         placeholder="Select"
         format="YYYY年MM月"
       ></date-picker>
+    </div>
+    <div style="margin-top: 20px">
+      <el-input
+        v-model="numberInput.altitude"
+        placeholder="高度"
+        v-limit-number="{ data: numberInput, key: 'altitude', p: 2, min: 0, max: 999999 }"
+      ></el-input>
+    </div>
+    <div style="margin-top: 20px">
+      <el-input
+        v-model="numberInputRef"
+        placeholder="高度"
+        v-limit-number="limitObj"
+      ></el-input>
+    </div>
+    <div style="margin-top: 20px">
+      <input
+        v-model="numberInputRef1"
+        placeholder="高度"
+        v-limit-number="limitObj1"
+      />
     </div>
   </div>
 </template>

@@ -45,10 +45,10 @@ export default defineConfig({
   server: {
     host: true,
     proxy: {
-      '/hefeiapi': {
-        target: 'http://home.zsl0.com:20004/api/',
+      '/glimg': {
+        target: 'http://221.122.67.139:8889/',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/hefeiapi/, ''),
+        rewrite: (path) => path.replace(/^\/glimg/, ''),
       },
     }
   }

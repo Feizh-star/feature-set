@@ -99,10 +99,10 @@ function fetchGeoJson(adcode: string): Promise<ArrayBuffer> {
   <div class="zrender-page">
     <section class="z-btns">
       <el-button @click="clickEvent">按钮</el-button>
-      <!-- <el-button @click="loadAdCode">
+      <el-button @click="loadAdCode">
         <input type="file" name="加载编码" style="display: none;" @click.stop @change="handleAdCode">
         加载编码
-      </el-button> -->
+      </el-button>
     </section>
     <div class="z-container" ref="z1Ref">
       <div ref="resultDiv" style="width: 100%; height: 100%"></div>

@@ -1,13 +1,15 @@
 import { shallowRef } from 'vue'
 import type * as L from 'leaflet'
 import type { ShallowRef } from 'vue'
-import 'leaflet/dist/leaflet.css'
 import { drawGeojsons } from 'hcl_n'
 
 export function useGeoJsonArea({ mapIns }: { mapIns: ShallowRef<L.Map | null> }) {
   const geoJsonAreaLayer = shallowRef<ReturnType<typeof drawGeojsons> | null>(null)
   const addGeoArea = (cfg: { [p: string]: any }) => addGeoAreaFunc(mapIns, geoJsonAreaLayer, cfg)
   const removeGeoArea = () => removeGeoAreaFunc(mapIns, geoJsonAreaLayer)
+  onBeforeUnmount(() => {
+    removeGeoArea()
+  })
   return {
     addGeoArea,
     removeGeoArea,

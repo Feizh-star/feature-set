@@ -1,57 +1,42 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
+import * as L from 'leaflet'
+import type GeoJSON from 'geojson'
 import { useInitMap } from './composition/useInitMap'
-import TestPlugin from './composition/plugins/test'
 import henan_border from './composition/geojson/henan_border.json'
 import test_png from '@/views/Map/pages/plugintest/composition/geojson/410000.png'
+import line_png from '@/views/Map/pages/plugintest/t2-2023061501.png'
 
 const geoserverUrl = 'http://221.122.67.145:8323'
 const tilesCfg = [
-  { path: geoserverUrl + '/geoserver/chinaMap/wms', layers: 'chinaMap:chinaMap' },
+  { path: geoserverUrl + '/geoserver/chinaMap/wms', options: {  layers: 'chinaMap:chinaMap' }, wms: true },
   // { path: geoserverUrl + '/geoserver/chinaMap/wms', layers: 'chinaMap:chinaMap_zhengzhou' }
 ]
 const panesCfg = [
-  { name: 'shadow-mask', zIndex: 1010 },
-  { name: 'border-pane', zIndex: 1030 },
+  { name: 'plugin-test-pane', zIndex: 1005 },
+  { name: 'shadow-layer', zIndex: 1010 },
+  { name: 'line-pane', zIndex: 1030 },
+  { name: 'area-pane', zIndex: 1040 },
+  { name: 'border-pane', zIndex: 1050 },
 ]
 const layerCfg = [
   { pane: 'station-point', name: 'stationPoint' },
 ]
 
 const mapElRef = ref<HTMLDivElement>()
-const { mapInstance, addGeoArea } = useInitMap({
+const { mapInstance, addGeoArea, addGeoJsonLine  } = useInitMap({
   mapElRef,
   panes: panesCfg,
   layerInfo: layerCfg,
-  tiles: tilesCfg,
-  mask: {
-    enable: false,
-    zIndex: 996,
-    border: henan_border,
-    shadowBorders: {
-      borderShapes: [
-        {
-          enable: true,
-          offsetX: 0,
-          offsetY: 0,
-          z: 30,
-          style: {
-            stroke: '#2959b6',
-            fill: 'transparent',
-            lineWidth: 3,
-            shadowBlur: 20,
-            shadowColor: '#2959b6',
-          },
-        },
-        {
-          enable: false,
-        },
-        {
-          enable: false,
-        },
-      ],
-    },
+  // tiles: tilesCfg,
+  shadow: {
+    enable: true,
+    border: henan_border as GeoJSON.FeatureCollection,
+    mask: { enable: true }
   },
+  mapOpts: {
+    center: [44.1507, 123.3545]
+  }
 })
 
 onMounted(() => {
@@ -62,6 +47,7 @@ onMounted(() => {
     maxZoom: 16,
     wrapSize: 400,
     tileSize: 512,
+    pane: 'area-pane',
     layers: [
       {
         name: '芒市',
@@ -69,19 +55,43 @@ onMounted(() => {
         type: 'polygon',
         index: 1,
         style: {
-          strokeColor: 'red',
+          strokeColor: '#67879c',
           storkeWidth: 1,
-          fillColor: 'rgba(100,255,0,0.3)'
+          fillColor: '#1b3152'
         }
       }
     ],
   })
-  const testLayer = new TestPlugin('red', [
-    [112.1594, 34.5337],
-    [115.1917, 34.3162],
-    [112.7527, 32.6301],
-  ])
-  testLayer.addTo(mapInstance.value)
+  // addGeoJsonLine([{
+  //   name: 'tl',
+  //   type: 'gbf',
+  //   data: '/glimg/tongliao/numerical_model/ec/surf/json/2023061500/t2-2023061501.png',
+  //   style: {
+  //     width: 2,
+  //     color: '#3388ff'
+  //   }
+  // }], { pane: 'line-pane' })
+})
+const img = new Image()
+img.onload = function () {
+  console.log('load')
+}
+img.onerror = function () {
+  console.log('error')
+}
+img.src = '/glimg/zzdata/numerical_model/ec/surf/json/2022122212/t2-2022122509.png'
+fetch('/glimg/tongliao/numerical_model/ec/surf/json/2023061500/t2-2023061501.png').then(res => {
+  return res.arrayBuffer()
+}).then(buffer => {
+  let binary = '';
+  let bytes = new Uint8Array(buffer);
+  for (var i = 0; i < bytes.length; i++) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+  var base64String = btoa(binary);
+  console.log(base64String); // 这里是Base64编码的图像数据
+}).catch((error) => {
+  console.log(error)
 })
 </script>
 
@@ -100,6 +110,9 @@ onMounted(() => {
   .map-container {
     flex: 1;
     min-height: 0;
+    :deep(.shadow-layer) {
+      transform: translate(4px, 8px);
+    }
   }
 }
 </style>

@@ -1,11 +1,13 @@
 import * as L from 'leaflet'
+import * as turf from '@turf/turf'
+
 const TestPlugin = L.Layer.extend({
 	// 初始化函数
-	initialize: function(color: string, points: [number, number][]) {
+	initialize: function({color, geojson, pane}: {color: string, geojson: GeoJSON.FeatureCollection, pane: string}) {
 		this.color = color;
-    this.points = points;
+    this.polygonArray = genMaskPolygonByGeoJSON(geojson);
 		// 图层容器，其实就是一个一个的div，通过appendChild可以添加我们创建的canvas
-		this.pane = "overlayPane"
+		this.pane = pane
 	},
 	onAdd(map: L.Map) {
 		// 图层添加到地图的时候，触发的操作
@@ -19,9 +21,9 @@ const TestPlugin = L.Layer.extend({
 	onRemove() {
 		try {
 			//删除旧的canvas
-			this._map.getPanes()[this.pane].removeChild(this._canvas)
+			this._map.getPanes()[this.pane].removeChild(this.canvas)
 		} catch (e) {
-			console.log(111)
+			console.log('no old canvas')
 		}
 	},
 	createCanvas() {
@@ -29,7 +31,7 @@ const TestPlugin = L.Layer.extend({
 			//如果存在旧的canvas，就删除旧的canvas
 			this._map.getPanes()[this.pane].removeChild(this.canvas)
 		} catch (e) {
-			console.log(111)
+			console.log('no old canvas')
 		}
 		// 通过leaflet自带方法创建canvas，统计增加leaflet-layer的class
 		const canvas = L.DomUtil.create('canvas', 'leaflet-layer');
@@ -49,19 +51,17 @@ const TestPlugin = L.Layer.extend({
 	},
 	draw() {
 		// 自定义的绘图函数
-    const screenPoints = this.points.map((p: [number, number]) => {
-      const convert = this._map.latLngToContainerPoint([p[1], p[0]])
-      return [convert.x, convert.y]
-    })
 		const ctx = this.canvas.getContext("2d");
 		ctx.fillStyle = this.color;
     ctx.beginPath()
-    for (let i = 0; i < screenPoints.length; i++) {
-      ctx[i === 0 ? 'moveTo' : 'lineTo'](...screenPoints[i])
-    }
+		for (const polygon of this.polygonArray) {
+			for (const [index, point] of polygon.entries()) {
+				const convert = this._map.latLngToContainerPoint([point[0], point[1]])
+				ctx[index === 0 ? 'moveTo' : 'lineTo'](convert.x, convert.y)
+			}
+		}
     ctx.closePath()
     ctx.fill()
-
 	},
 	zoomEvent: function() {
 		//这个主要是为了地图缩放的时候，画布能跟着进行同步缩放，
@@ -76,12 +76,30 @@ const TestPlugin = L.Layer.extend({
 			.getCenterOffset(center)
 			.multiplyBy(-scale)
 			.subtract(map.getMapPanePos())
-		L.DomUtil.setTransform(this._canvas, offset, scale)
+		L.DomUtil.setTransform(this.canvas, offset, scale)
 	},
 	moveEvent: function() {
 		this.createCanvas()
 		this.draw()
 	}
 })
+
+function genMaskPolygonByGeoJSON(geoData: GeoJSON.FeatureCollection) {
+  const geoDataTemp = turf.clone(geoData as unknown as turf.AllGeoJSON)
+  const bgPolygon = [
+    [[90, -180],[90, 180],[-90, 180],[-90, -180],[90, -180]], // outer ring
+  ]
+  const outerRingDirection = turf.booleanClockwise(turf.lineString(bgPolygon[0])) // 外部轮廓方向
+  turf.flattenEach(geoDataTemp, function (currentFeature) {
+    const polygonArray = currentFeature.geometry.coordinates[0]
+    polygonArray.forEach((item: any) => item.reverse())
+    const innerRingDirection = turf.booleanClockwise(turf.lineString(polygonArray))
+    if (innerRingDirection === outerRingDirection) {
+      polygonArray.reverse()
+    }
+    bgPolygon.push(polygonArray)
+  })
+  return bgPolygon
+}
 
 export default TestPlugin
