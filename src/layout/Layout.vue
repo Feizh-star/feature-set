@@ -14,9 +14,9 @@
             <LayoutBread></LayoutBread>
           </div>
           <div class="ly-main-body-view">
-            <RouterView v-slot="{ Component }">
+            <RouterView v-slot="{ Component, route }">
               <KeepAlive>
-                <component :is="Component" />
+                <component :is="renderComponent(Component, route)" />
               </KeepAlive>
             </RouterView>
           </div>
@@ -54,6 +54,16 @@ import { RouterView } from 'vue-router';
 import { useMenu } from '@/stores/menu'
 const menu = useMenu()
 const menuList = menu.getMenuList
+
+const props = defineProps<{
+  containerName?: string
+}>()
+function renderComponent(Component: any, route: any) {
+  return !props.containerName ||
+    new Set(route.matched.map((item: any) => item.name)).has(props.containerName)
+    ? Component
+    : undefined
+}
 </script>
 
 <style lang="scss" scoped>

@@ -3,6 +3,9 @@
     "path": "/",
     "name": "onebodym",
     "component": "Layout",
+    "props": {
+      "containerName": "onebodym"
+    },
     "redirect": "/hardmoni",
     "meta": {
       "title": "一体化监控",
@@ -46,6 +49,9 @@
     "path": "/testcom",
     "name": "testcom",
     "component": "Layout",
+    "props": {
+      "containerName": "testcom"
+    },
     "redirect": "timeline",
     "meta": {
       "title": "测试组件",
@@ -104,6 +110,9 @@
     "path": "/zrender",
     "name": "zrender",
     "component": "Layout",
+    "props": {
+      "containerName": "zrender"
+    },
     "redirect": "zrenderstart",
     "meta": {
       "title": "ZRender",
@@ -124,6 +133,9 @@
         "path": "zsubpage",
         "name": "zsubpage",
         "component": "RouterSocket",
+        "props": {
+          "containerName": "zsubpage"
+        },
         "redirect": "circleanimate",
         "meta": {
           "title": "功能演示",
@@ -166,6 +178,9 @@
     "path": "/d3",
     "name": "d3",
     "component": "Layout",
+    "props": {
+      "containerName": "d3"
+    },
     "redirect": "d3start",
     "meta": {
       "title": "d3",
@@ -186,6 +201,9 @@
         "path": "dsubpage",
         "name": "dsubpage",
         "component": "RouterSocket",
+        "props": {
+          "containerName": "dsubpage"
+        },
         "redirect": "dcircle",
         "meta": {
           "title": "功能演示",
@@ -210,6 +228,9 @@
     "path": "/maptest",
     "name": "maptest",
     "component": "Layout",
+    "props": {
+      "containerName": "maptest"
+    },
     "redirect": "mapcommon",
     "meta": {
       "title": "地图测试",
@@ -230,6 +251,9 @@
         "path": "mapfeature",
         "name": "mapfeature",
         "component": "RouterSocket",
+        "props": {
+          "containerName": "mapfeature"
+        },
         "redirect": "mapstain",
         "meta": {
           "title": "地图功能",
@@ -290,6 +314,9 @@
     "path": "/excel",
     "name": "excel",
     "component": "Layout",
+    "props": {
+      "containerName": "excel"
+    },
     "redirect": "readexcel",
     "meta": {
       "title": "处理文件",
@@ -312,6 +339,9 @@
     "path": "/samevue",
     "name": "samevue",
     "component": "Layout",
+    "props": {
+      "containerName": "samevue"
+    },
     "redirect": "samevuepage1",
     "meta": {
       "title": "同一组件",
@@ -351,6 +381,9 @@
     "path": "/hefei",
     "name": "hefei",
     "component": "Layout",
+    "props": {
+      "containerName": "hefei"
+    },
     "redirect": "compremonotir",
     "meta": {
       "title": "HeFei",
@@ -373,6 +406,9 @@
     "path": "/webgl",
     "name": "webgl",
     "component": "Layout",
+    "props": {
+      "containerName": "webgl"
+    },
     "redirect": "webglstart",
     "meta": {
       "title": "WebGL",
@@ -393,6 +429,9 @@
         "path": "glsubpage",
         "name": "glsubpage",
         "component": "RouterSocket",
+        "props": {
+          "containerName": "glsubpage"
+        },
         "redirect": "glfirst",
         "meta": {
           "title": "功能演示",
@@ -417,6 +456,9 @@
     "path": "/canvastest",
     "name": "canvastest",
     "component": "Layout",
+    "props": {
+      "containerName": "canvastest"
+    },
     "redirect": "canvasapitest",
     "meta": {
       "title": "Canvas",
@@ -437,6 +479,9 @@
         "path": "canvassubpage",
         "name": "canvassubpage",
         "component": "RouterSocket",
+        "props": {
+          "containerName": "canvassubpage"
+        },
         "meta": {
           "title": "功能测试",
           "hidden": false,

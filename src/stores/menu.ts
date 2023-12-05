@@ -11,18 +11,24 @@ import pathModule from 'path-browserify'
 
 const pages = importPage()
 
+interface IState {
+  menuList: RouteRecordRaw[]
+  currentMenu: RouteRecordRaw
+  routePath: any[]
+}
+
 let socketIndex = 1
 export const useMenu = defineStore({
   id: 'menuTree',
   state: () => ({
-    menuList: [] as Array<RouteRecordRaw>,
+    menuList: [] as RouteRecordRaw[],
     currentMenu: {} as RouteRecordRaw,
     routePath: [] as any[]
   }),
   getters: {
-    getMenuList: (state) => state.menuList,
-    getCurrentMenu: (state) => state.currentMenu,
-    getRouteNodePath: (state) => state.routePath,
+    getMenuList: (state: IState) => state.menuList,
+    getCurrentMenu: (state: IState) => state.currentMenu,
+    getRouteNodePath: (state: IState) => state.routePath,
     getRoutePath() {
       // @ts-ignore
       return pathModule.join(...this.getRouteNodePath.map(node => node.path))
@@ -76,7 +82,10 @@ function parseRoutes(routes: Router.MyRawRoute[], parent: string = ''): RouteRec
       component = pages[raw.component]
     }
     // 避免1级目录类型的路由节点名称重复(path是'/'的1级路由的name都是Layout)
-    if (raw.name == "Layout") raw.name = raw.name.concat(String(socketIndex++))
+    if (raw.name == 'Layout') {
+      raw.name = raw.name.concat(String(socketIndex++))
+      raw.props && (raw.props.containerName = raw.name)
+    }
     const parsedRoute: RouteRecordRaw = {
       path: raw.path,
       component: component,
@@ -107,8 +116,11 @@ function addLayoutForSingleRoute(routes: Router.MyRawRoute[]): Router.MyRawRoute
         name: 'Layout',
         component: 'Layout',
         meta: {
-          title: 'Layout',
+          title: '',
           hidden: false,
+        },
+        props: {
+          containerName: 'Layout',
         },
         children: [r]
       }
