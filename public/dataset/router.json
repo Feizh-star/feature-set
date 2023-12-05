@@ -72,11 +72,29 @@
         }
       },
       {
+        "path": "customtabletest",
+        "name": "customtabletest",
+        "component": "CustomTableTest/Index.vue",
+        "meta": {
+          "title": "自定义表格测试",
+          "hidden": false
+        }
+      },
+      {
         "path": "elementtest",
         "name": "elementtest",
         "component": "ElementCom/Index.vue",
         "meta": {
           "title": "Element测试",
+          "hidden": false
+        }
+      },
+      {
+        "path": "mocktest",
+        "name": "mocktest",
+        "component": "Mock/Index.vue",
+        "meta": {
+          "title": "Mock测试",
           "hidden": false
         }
       }
@@ -291,50 +309,6 @@
     ]
   },
   {
-    "path": "/webgl",
-    "name": "webgl",
-    "component": "Layout",
-    "redirect": "webglstart",
-    "meta": {
-      "title": "WebGL",
-      "hidden": false,
-      "alwaysShow": true
-    },
-    "children": [
-      {
-        "path": "webglstart",
-        "name": "webglstart",
-        "component": "WebGL/Index.vue",
-        "meta": {
-          "title": "测试",
-          "hidden": false
-        }
-      },
-      {
-        "path": "glsubpage",
-        "name": "glsubpage",
-        "component": "RouterSocket",
-        "redirect": "glfirst",
-        "meta": {
-          "title": "功能演示",
-          "hidden": false,
-          "alwaysShow": true
-        },
-        "children": [
-          {
-            "path": "glfirst",
-            "name": "glfirst",
-            "component": "WebGL/subpage/first/Index.vue",
-            "meta": {
-              "title": "基础",
-              "hidden": false
-            }
-          }
-        ]
-      }
-    ]
-  },
-  {
     "path": "/samevue",
     "name": "samevue",
     "component": "Layout",
@@ -392,6 +366,50 @@
           "title": "综合监测",
           "hidden": false
         }
+      }
+    ]
+  },
+  {
+    "path": "/webgl",
+    "name": "webgl",
+    "component": "Layout",
+    "redirect": "webglstart",
+    "meta": {
+      "title": "WebGL",
+      "hidden": false,
+      "alwaysShow": true
+    },
+    "children": [
+      {
+        "path": "webglstart",
+        "name": "webglstart",
+        "component": "WebGL/Index.vue",
+        "meta": {
+          "title": "测试",
+          "hidden": false
+        }
+      },
+      {
+        "path": "glsubpage",
+        "name": "glsubpage",
+        "component": "RouterSocket",
+        "redirect": "glfirst",
+        "meta": {
+          "title": "功能演示",
+          "hidden": false,
+          "alwaysShow": true
+        },
+        "children": [
+          {
+            "path": "glfirst",
+            "name": "glfirst",
+            "component": "WebGL/subpage/first/Index.vue",
+            "meta": {
+              "title": "基础",
+              "hidden": false
+            }
+          }
+        ]
       }
     ]
   },
