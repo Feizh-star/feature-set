@@ -52,6 +52,7 @@ interface IBindValue {
   bind: Record<string, any>
   key: string
   enable: boolean | Ref<boolean>
+  reverse?: boolean
 }
 interface IElOptions {
   datepickerProps: INeedProps
@@ -115,7 +116,8 @@ function init(el: HTMLElement, binding: { value: IBindValue }, props: INeedProps
   const bindValue = {
     bind: binding.value.bind,
     key: binding.value.key,
-    enable: unref(binding.value.enable)
+    enable: unref(binding.value.enable),
+    reverse: binding.value.reverse || false
   }
   let elOption: IElOptions = {
     options: stepOptions,
@@ -169,7 +171,11 @@ function removeIconElAndEvent(el: HTMLElement, elOption: IElOptions) {
     }
   }
 }
-function toggleOriginIconMouseover(el: HTMLElement, elOption: IElOptions | null, add: boolean = true) {
+function toggleOriginIconMouseover(
+  el: HTMLElement,
+  elOption: IElOptions | null,
+  add: boolean = true
+) {
   if (!elOption) return
   const iconOverEl = el.getElementsByClassName('mx-input-wrapper')[0] as HTMLElement
   if (!iconOverEl) return
@@ -241,6 +247,7 @@ function handleTimeCore(
   options: IStepOptions,
   elOptions: IElOptions
 ) {
+  const reverse = elOptions.bindValue.reverse
   const momentTime =
     options.valueType === 'date'
       ? moment(time)
@@ -322,12 +329,12 @@ function handleTimeCore(
     const lastBitItemCarry = index > 0 ? reverseList[index - 1].carry : false // 低一位是否有进位
     // 低一位的索引有效（代表至少是当前时间的最低位），且没有进位，后面都不用算了
     if (reverseList[index - 1]?.index >= 0 && !lastBitItemCarry) break
-    if (type === 'up') {
-      item.carry = item.index + 1 > item.currentEndIndex
-      item.nextIndex = item.carry ? item.currentStartIndex : item.index + 1
-    } else {
+    if (type === (reverse ? 'down' : 'up')) {
       item.carry = item.index - 1 < item.currentStartIndex
       item.nextIndex = item.carry ? item.lastEndIndex : item.index - 1
+    } else {
+      item.carry = item.index + 1 > item.currentEndIndex
+      item.nextIndex = item.carry ? item.currentStartIndex : item.index + 1
     }
   }
   const newMoment = moment(new Date(0))
