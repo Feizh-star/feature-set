@@ -54,7 +54,7 @@ export default defineConfig({
         target: 'http://221.122.67.139:8889/',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/glimg/, ''),
-      },
+      }
     }
   }
 })

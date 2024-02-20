@@ -70,5 +70,56 @@ let windyLayer = L.Layer.extend({
     this.ctx.strokeStyle = this.strokeColor
     this.ctx.lineWidth = 3
     this.canvas = canvas
+  },
+  buildData(re) {
+    const canvas = document.createElement('canvas')
+    const ctx = canvas.getContext('2d')
+    const img = new Image()
+    img.onload = function () {
+      canvas.width = img.width
+      canvas.height = img.height
+      ctx.drawImage(img, 0, 0)
+      const imgdata = ctx.getImageData(0, 0, img.width, img.height)
+      const global = this.global
+      const data = new Array(img.height - 1)
+      const uadd = imgdata.data[0]
+      const uscale = imgdata.data[1]
+      const vadd = imgdata.data[4]
+      const vscale = imgdata.data[5]
+      for (let i = 0; i < img.height - 1; i++) {
+        data[i] = new Array(img.width)
+        for (let j = 0; j < img.width; j++) {
+          const num = ((i + 1) * img.width + j) * 4
+          const uv = [imgdata.data[num] / uscale - uadd, imgdata.data[num + 1] / vscale - vadd]
+          data[i][j] = uv
+        }
+        if (global) {
+          data[i].push(data[i][0])
+        }
+      }
+      this.data = data
+      this.buildColumns()
+      this.ready = true
+      this.run()
+      if (re) {
+        this.addAlpha()
+      }
+    }.bind(this)
+    img.src = this.url
+  },
+  buildColumns() {
+    const map = this._map
+    const size = map.getSize()
+    const zoom = map.getZoom()
+    const latmin = this.latmin
+    const lonmin = this.lonmin
+    const latmax = this.latmax
+    const lonmax = this.lonmax
+    const data = this.data
+    const columns = new Array(size.y)
+    const vscale = this.vscale
+    const oripx = this._map.getPixelBounds()
+    const orix = oripx.min.x
+    const oriy = oripx.min.y
   }
 })

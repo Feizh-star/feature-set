@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import HorScroll from '@/components/HorScroll/IndexV3.vue'
 import TimeSquence from './components/TimeSquence.vue'
 import WindEChart from './components/WindEChart.vue'
+import DatepickerStep from './components/DatepickerStep.vue'
 
 
 
@@ -77,6 +78,9 @@ function myClickRemove() {
     <div id="test-root">
       <!-- <img src="@/assets/images/error.png" alt="" /> -->
       <span>123</span>
+    </div>
+    <div class="test-datepicker-step">
+      <DatepickerStep />
     </div>
   </div>
 </template>

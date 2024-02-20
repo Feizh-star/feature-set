@@ -218,11 +218,11 @@ export function curAreaImageByElements(lt: HTMLElement, rb: HTMLElement, filenam
 //长杆 M0 ${i * 15} L35 ${i * 15} L35 ${i * 15 + 5} L0 ${i * 15 + 5}z
 //短杆 M0 ${i * 15} L20 ${i * 15} L20 ${i * 15 + 5} L0 ${i * 15 + 5}z
 //三角 M0 ${i * 35} L45 ${i * 35} L0 ${i * 35 + 30} L0 ${i * 35 + 25} L28 ${i * 35 + 5} L0 ${i * 35 + 5}z
-export function getWindPath(speed: number) {
+export function getWindShaftPath(speed: number) {
   const triGen = (i: number, y = 0) =>
-    `M0 ${i * 35 + y} L45 ${i * 35 + y} L0 ${i * 35 + 30 + y} L0 ${i * 35 + 25 + y} L28 ${i * 35 + 5 + y} L0 ${
+    `M0 ${i * 35 + y} L45 ${i * 35 + y} L0 ${i * 35 + 30 + y} L0 ${i * 35 + 25 + y} L28 ${
       i * 35 + 5 + y
-    }z `
+    } L0 ${i * 35 + 5 + y}z `
   const longGen = (i: number, y = 0) =>
     `M0 ${i * 15 + y} L35 ${i * 15 + y} L35 ${i * 15 + 5 + y} L0 ${i * 15 + 5 + y}z `
   const shortGen = (i: number, y = 0) =>
@@ -245,4 +245,35 @@ export function getWindPath(speed: number) {
   const poleHeight = Math.min(Math.max(triConut * 35 + (longCount + shortCount) * 15 + 10, 80), 175)
   path += `M0 ${poleHeight} L0 0 L5 0 L5 ${poleHeight}z`
   return path
+}
+export function getWindShaftImg(speed: number, color: string = '#333333') {
+  const path = getWindShaftPath(speed)
+  const pointStr: any = path.match(/(M|L)\d+\s\d+/g)
+  if (!pointStr) return ''
+  const points: {
+    type: 'lineTo' | 'moveTo'
+    point: [number, number]
+  }[] = pointStr.map((item: string) => {
+    const point1 = item.split(/\s/)
+    const startAction = point1[0]?.[0] || 'L'
+    return {
+      type: startAction === 'L' ? 'lineTo' : 'moveTo', // 不是L就是M
+      point: [point1[0]?.replace(/(M|L)/, '') || 0, point1[1] || 0]
+    }
+  })
+  const xMax = Math.max(...points.map(item => item.point[0]))
+  const yMax = Math.max(...points.map(item => item.point[1]))
+  const canvas = document.createElement('canvas')
+  canvas.width = xMax
+  canvas.height = yMax
+  const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
+  for (const pt of points) {
+    const actionName = pt.type
+    const point = pt.point
+    ;(ctx as any)[actionName](point[0], point[1])
+  }
+  ctx.fillStyle = color
+  ctx.fill()
+  const dataUrl = canvas.toDataURL()
+  return dataUrl
 }

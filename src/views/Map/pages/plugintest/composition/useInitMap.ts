@@ -263,6 +263,7 @@ function addTiles(mapIns: ShallowRef<L.Map | null>, tilesList: Array<ITileInfo>)
 function addHclMapLayer(mapIns: ShallowRef<L.Map | null>, hclMapLayer: ShallowRef<ReturnType<typeof MapHcMin> | null>, cfg: IAnyObject) {
   if (!mapIns.value) return
   // 添加瓦片
+  console.log(cfg)
   hclMapLayer.value = new MapHcMin({
     style: mapStyle,
     // 瓦片越大，地图越不精细,当前为固定的，如需要更改，请提需求
@@ -271,7 +272,7 @@ function addHclMapLayer(mapIns: ShallowRef<L.Map | null>, hclMapLayer: ShallowRe
     updateInterval: 50,
     //地图向外延申像素，越大，瓦片化越小，但是浏览器消耗变高
     wrapSize: 400,
-    url: 'http://221.122.67.142:3388/tile/',
+    url: 'http://221.122.67.142:3388/tile/map/pbf/',
     ...cfg
   }).addTo(mapIns.value!)
 }

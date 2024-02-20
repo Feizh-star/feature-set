@@ -29,7 +29,7 @@
     "file-saver": "^2.0.5",
     "geobuf": "^3.0.2",
     "geojson-vt": "^3.2.1",
-    "hcl": "^1.7.9",
+    "hcl": "^1.8.6",
     "hcl_n": "^1.2.1",
     "highcharts": "^10.3.3",
     "html2canvas": "^1.4.1",

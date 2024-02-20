@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useMouseInElement } from '@vueuse/core'
+import VueEllipsis from '@/directives/ellipsis/VueEllipsis.vue'
+
 const props = defineProps<{
   pName: string
 }>()
@@ -28,6 +30,14 @@ onMounted(() => {
     my.value = newY
   })
 })
+
+const text = ref(`这是一段\
+  很长很长很长很长很长很长很长很长很长很长很长\
+  很长很长很长很长很长很长很长很长很长很长很长\
+  很长很长很长很长很长很长很长很长很长很长很长\
+  很长很长很长很长很长很长很长很长很长很长很长\
+  很长很长很长很长很长很长很长很长很长很长很长\
+  的文字。真的很长很长。`)
 </script>
 
 <template>
@@ -51,6 +61,9 @@ onMounted(() => {
       <div>{{ mx }}</div>
       <div>{{ my }}</div>
     </div>
+    <div class="test-text">
+      <VueEllipsis :text="text || ''" :line="5" show-unfold />
+    </div>
   </div>
 </template>
 
@@ -67,5 +80,9 @@ onMounted(() => {
   width: 200px;
   height: 200px;
   border: 1px solid #efefef;
+}
+.test-text {
+  width: 35%;
+  text-align: justify;
 }
 </style>

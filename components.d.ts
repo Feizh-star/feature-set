@@ -9,12 +9,12 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
-    ActionList: typeof import('./src/components/CompreMonitor/ActionList.vue')['default']
     AnimationScrollList: typeof import('./src/components/CompreMonitor/AnimationScrollList.vue')['default']
     BaseChart: typeof import('./src/components/CompreMonitor/BaseChart.vue')['default']
     BlockHeader: typeof import('./src/components/HeFei/BlockHeader.vue')['default']
     ColHeader: typeof import('./src/components/CompreMonitor/ColHeader.vue')['default']
     DataAc: typeof import('./src/components/CompreMonitor/ObsQuality/DataAc.vue')['default']
+    DatePicker: typeof import('./src/components/DatePicker.vue')['default']
     DeviceChart: typeof import('./src/components/HeFei/MonitorChart/DeviceChart.vue')['default']
     DeviceMonitor: typeof import('./src/components/HeFei/DeviceMonitor.vue')['default']
     DisasterClassificationStatistics: typeof import('./src/components/HeFei/DisasterClassificationStatistics/index.vue')['default']
@@ -23,7 +23,6 @@ declare module '@vue/runtime-core' {
     ElBreadcrumb: typeof import('element-plus/es')['ElBreadcrumb']
     ElBreadcrumbItem: typeof import('element-plus/es')['ElBreadcrumbItem']
     ElButton: typeof import('element-plus/es')['ElButton']
-    ElCheckbox: typeof import('element-plus/es')['ElCheckbox']
     ElCol: typeof import('element-plus/es')['ElCol']
     ElConfigProvider: typeof import('element-plus/es')['ElConfigProvider']
     ElDatePicker: typeof import('element-plus/es')['ElDatePicker']
@@ -51,7 +50,6 @@ declare module '@vue/runtime-core' {
     InfoStat: typeof import('./src/components/CompreMonitor/ObsQuality/InfoStat.vue')['default']
     LabelSelect: typeof import('./src/components/HeFei/LabelSelect.vue')['default']
     LiveAction: typeof import('./src/components/CompreMonitor/LiveAction.vue')['default']
-    LiveActionList: typeof import('./src/components/CompreMonitor/LiveActionList.vue')['default']
     MapBorder: typeof import('./src/components/company/mapBorder.vue')['default']
     MonthReport: typeof import('./src/components/CompreMonitor/ObsQuality/MonthReport.vue')['default']
     NewEquipment: typeof import('./src/components/CompreMonitor/NewEquipment.vue')['default']

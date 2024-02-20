@@ -30,13 +30,125 @@ const { mapInstance, addGeoArea, addGeoJsonLine  } = useInitMap({
   layerInfo: layerCfg,
   // tiles: tilesCfg,
   shadow: {
-    enable: true,
+    enable: false,
     border: henan_border as GeoJSON.FeatureCollection,
-    mask: { enable: true }
+    mask: { enable: false }
   },
   mapOpts: {
-    center: [44.1507, 123.3545]
-  }
+    zoom: 5,
+    center: [40.1507, 118.3545]
+  },
+  // hclMapConfig: {
+  //   style: {
+  //     sea: {
+  //       fillStyle: 'red'
+  //     },
+  //     world: {
+  //       type: 'polygon',
+  //       fillStyle: '#1A222D',
+  //       strokeStyle: '#263845',
+  //       lineWidth: 1
+  //     },
+  //     china: {
+  //       type: 'polygon',
+  //       fillStyle: '#11161D',
+  //       strokeStyle: '#3B576A',
+  //       lineWidth: 1
+  //     },
+  //     province: {
+  //       type: 'polygon',
+  //       fillStyle: '#11161D',
+  //       strokeStyle: '#3B576A',
+  //       lineWidth: 1
+  //     },
+  //     shi: {
+  //       type: 'polygon',
+  //       fillStyle: '#11161D',
+  //       strokeStyle: '#3B576A',
+  //       lineWidth: 1
+  //     },
+  //     xian: {
+  //       type: 'polygon',
+  //       fillStyle: '#11161D',
+  //       strokeStyle: '#3B576A',
+  //       lineWidth: 1
+  //     },
+  //     xiangzhen: {
+  //       type: 'polygon',
+  //       fillStyle: '#11161D',
+  //       strokeStyle: '#3B576A',
+  //       lineWidth: 1
+  //     },
+  //     river1: {
+  //       type: 'polygon',
+  //       fillStyle: '#14497D'
+  //     },
+  //     provincePoint: {
+  //       type: 'point',
+  //       fillStyle: 'red',
+  //       // font: "20px 宋体",
+  //       fontSize: 20,
+  //       fontFamily: '宋体',
+  //       labelKey: 'SNAME',
+  //       textHeight: 20,
+  //       color: '#5678A4'
+  //     },
+  //     shenghui: {
+  //       type: 'point',
+  //       radius: 6,
+  //       fillStyle: '#00B7D7',
+  //       strokeWidth: 3,
+  //       strokeStyle: '#1C65C3',
+  //       // font: "20px 宋体",
+  //       fontSize: 20,
+  //       fontFamily: '宋体',
+  //       labelKey: 'dname',
+  //       textHeight: 20,
+  //       color: '#5678A4'
+  //     },
+  //     shiPoint: {
+  //       type: 'point',
+  //       radius: 4,
+  //       strokeWidth: 3,
+  //       strokeStyle: '#04C9CB',
+  //       // font: "20px 宋体",
+  //       fontSize: 16,
+  //       fontFamily: '宋体',
+  //       labelKey: 'dname',
+  //       textHeight: 20,
+  //       color: '#5678A4'
+  //     },
+  //     xianPoint: {
+  //       type: 'point',
+  //       radius: 3,
+  //       // strokeWidth: 1,
+  //       // strokeStyle: "black",
+  //       // font: "20px 宋体",
+  //       fontSize: 16,
+  //       fontFamily: '宋体',
+  //       labelKey: 'XNAME',
+  //       textHeight: 20,
+  //       color: '#5678A4'
+  //     },
+  //     xiangzhenPoint: {
+  //       type: 'point',
+  //       radius: 3,
+  //       // strokeWidth: 1,
+  //       // strokeStyle: "black",
+  //       // font: "20px 宋体",
+  //       fontSize: 16,
+  //       fontFamily: '宋体',
+  //       labelKey: 'name_x1',
+  //       textHeight: 20,
+  //       color: '#5678A4'
+  //     },
+  //     jiuduanxian: {
+  //       type: 'line',
+  //       strokeStyle: '#009EFF',
+  //       lineWidth: 1
+  //     }
+  //   }
+  // }
 })
 
 onMounted(() => {
@@ -89,7 +201,7 @@ fetch('/glimg/tongliao/numerical_model/ec/surf/json/2023061500/t2-2023061501.png
     binary += String.fromCharCode(bytes[i]);
   }
   var base64String = btoa(binary);
-  console.log(base64String); // 这里是Base64编码的图像数据
+  // console.log(base64String); // 这里是Base64编码的图像数据
 }).catch((error) => {
   console.log(error)
 })

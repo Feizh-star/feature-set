@@ -101,7 +101,7 @@ function windDataHandler(chart: echarts.ECharts, data: Array<any>) {
   const yAxisMax = Math.ceil((maxValue + 10) / 10) * 10
   const series1Data = data.map(item => ({
     value: item.value,
-    symbol: `path://${getWindPath(item.value)}`,
+    symbol: `path://${getWindShaftPath(item.value)}`,
     symbolSize: 24,
     symbolKeepAspect: true,
     symbolRotate: item.dir,
@@ -130,7 +130,7 @@ function windDataHandler(chart: echarts.ECharts, data: Array<any>) {
 //长杆 M0 ${i * 15} L35 ${i * 15} L35 ${i * 15 + 5} L0 ${i * 15 + 5}z 
 //短杆 M0 ${i * 15} L20 ${i * 15} L20 ${i * 15 + 5} L0 ${i * 15 + 5}z 
 //三角 M0 ${i * 35} L45 ${i * 35} L0 ${i * 35 + 30} L0 ${i * 35 + 25} L28 ${i * 35 + 5} L0 ${i * 35 + 5}z 
-function getWindPath(speed: number) {
+function getWindShaftPath(speed: number) {
   const triGen = (i: number, y = 0) => `M0 ${i * 35 + y} L45 ${i * 35 + y} L0 ${i * 35 + 30 + y} L0 ${i * 35 + 25 + y} L28 ${i * 35 + 5 + y} L0 ${i * 35 + 5 + y}z `
   const longGen = (i: number, y = 0) => `M0 ${i * 15 + y} L35 ${i * 15 + y} L35 ${i * 15 + 5 + y} L0 ${i * 15 + 5 + y}z `
   const shortGen = (i: number, y = 0) => `M0 ${i * 15 + y} L20 ${i * 15 + y} L20 ${i * 15 + 5 + y} L0 ${i * 15 + 5 + y}z `

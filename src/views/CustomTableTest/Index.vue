@@ -61,7 +61,8 @@ const config1 = [
     props: {
       label: "创建时间",
       prop: "createTime",
-      minWidth: 180,
+      // showOverflowTooltip: true,
+      width: 50,
     },
   },
 ]

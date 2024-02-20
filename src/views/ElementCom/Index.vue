@@ -1,7 +1,7 @@
 <script setup lang='ts'>
 import { ref } from 'vue'
-import datepickertest from './components/datepickerTest.vue'
-import MyDatePicker from './components/MyDatePickerGf.vue'
+import moment from 'moment'
+import DatePicker from "@/components/DatePicker.vue"
 import type { TypeString } from './components/MyDatePickerGf.vue'
 import { dateToString } from '@/utils/moment'
 import vLimitNumber from '@/directives/vLimitNumber.js'
@@ -13,7 +13,6 @@ function disabledDate(currentData: Date) {
   const endTime = new Date(endDate).getTime()
   return currentTime - endTime > 0
 }
-
 const allHour: Array<number> = []
 const allMinute: Array<number> = []
 for (let i = 0; i < 60; i++) {
@@ -22,7 +21,6 @@ for (let i = 0; i < 60; i++) {
 }
 const restMinute = [0, 15, 30, 45]
 const restHour = [8, 20]
-
 function disabledMinute(a: any, b: any) {
   const dis = allMinute.filter(m => !restMinute.includes(m))
   return dis
@@ -32,18 +30,7 @@ function disabledHour(a: any, b: any) {
   return dis
 }
 
-const dateTime = ref([dateToString(new Date(), 'YYYY-MM-DD HH:mm')])
-const pickerType = ref<TypeString>('ten')
-watch(dateTime, (newVal) => {
-  console.log(newVal)
-})
 
-const types = ['datetime', 'week', 'month', 'year', 'ten', 'quarter']
-
-const value6 = ref(null)
-watch(value6, (newVal) => {
-  console.log(newVal)
-})
 
 const numberInput = reactive({
   altitude: ''
@@ -54,6 +41,23 @@ const numberInputRef1 = ref('')
 const limitObj1 = { data: numberInputRef1, key: 'value', p: 2, min: 0, max: 999999 }
 watch(numberInputRef, newVal => {
   console.log(newVal)
+})
+
+const datepickerType = ref<TypeString>('ten')
+const types = ['datetime', 'week', 'month', 'year', 'ten', 'quarter']
+const standardDateFormatter = "YYYY-MM-DD HH:mm:ss";
+
+const pickedTime = ref([moment().format(standardDateFormatter)])
+const hourOptions = ref<number[] | null>(null)
+const minuteOptions = ref<number[] | null>(null)
+const disableStart = computed(() => undefined)
+const datepickerFormat = ref("")
+const defaultTime = ref("")
+function changeHandler(date: Date, type: TypeString, otype: string) {
+  // console.log(date, type, otype)
+}
+watch(pickedTime, newVal => {
+  console.log(JSON.stringify(newVal))
 })
 </script>
 
@@ -69,38 +73,30 @@ watch(numberInputRef, newVal => {
       :disabled-minutes="disabledMinute"
       :disabled-hours="disabledHour"
     />
-    <datepickertest />
 
     <div style="margin-top: 20px">
-      <el-radio-group v-model="pickerType" size="small">
+      <el-radio-group v-model="datepickerType" size="small">
         <el-radio-button :label="t" v-for="t in types" :key="t"></el-radio-button>
       </el-radio-group>
       <br/>
-      <MyDatePicker 
-        v-model="dateTime"
-
-        :type="pickerType"
-        :hour-options="[8, 20]"
-        :minute-options="[0, 15, 30, 45]"
-        :disable-start="new Date()"
-
-        value-type="YYYY-MM-DD HH:mm"
+      <DatePicker
+        v-model="pickedTime"
+        :type="datepickerType"
+        :hour-options="hourOptions"
+        :minute-options="minuteOptions"
+        :disable-start="disableStart"
+        :value-type="standardDateFormatter"
         :show-minute="true"
-        :clearable="true"
+        :format="datepickerFormat"
+        :default-time="defaultTime"
+        :clearable="false"
         :hour-step="1"
-        class="light-datepicker"
+        confirm
+        confirm-text="确认"
+        @change="changeHandler"
       />
-        <!-- :disable-start="new Date()" -->
     </div>
     
-    <div style="margin-top: 20px">
-      <date-picker 
-        v-model:value="value6" 
-        type="month" 
-        placeholder="Select"
-        format="YYYY年MM月"
-      ></date-picker>
-    </div>
     <div style="margin-top: 20px">
       <el-input
         v-model="numberInput.altitude"
@@ -140,7 +136,8 @@ watch(numberInputRef, newVal => {
 
 <style lang="less" scoped>
 
-:deep(.light-datepicker) {
+// 深色的旬季日期选择器
+:deep(.dark-datepicker) {
   width: 180px;
   .mx-input,
   .custom-input {
