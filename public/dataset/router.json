@@ -403,6 +403,31 @@
     ]
   },
   {
+    "path": "/huaianaccount",
+    "name": "huaianaccount",
+    "component": "Layout",
+    "props": {
+      "containerName": "huaianaccount"
+    },
+    "redirect": "appointment",
+    "meta": {
+      "title": "淮安",
+      "hidden": false,
+      "alwaysShow": true
+    },
+    "children": [
+      {
+        "path": "appointment",
+        "name": "appointment",
+        "component": "HuaianAccount/subpage/appointment/Index.vue",
+        "meta": {
+          "title": "参观预约",
+          "hidden": false
+        }
+      }
+    ]
+  },
+  {
     "path": "/webgl",
     "name": "webgl",
     "component": "Layout",

@@ -96,14 +96,14 @@ const testData = ref([
   { postId: '1', postName: '3', postCode: '3', postCode1: '3-1', postCode2: '3-2', postSort: '4', createTime: '2023' },
   { postId: '1', postName: '4', postCode: '3', postCode1: '3-1', postCode2: '3-2', postSort: '4', createTime: '2023' },
 ])
-const deps = {
+const deps = reactive({
   postName: [
     { label: '岗位1', value: '1' },
     { label: '岗位2', value: '2' },
     { label: '岗位3', value: '3' },
     { label: '岗位4', value: '4' },
   ]
-}
+})
 
 function selChange(a: any) {
   console.log(a)
@@ -244,29 +244,37 @@ const {
 </script>
 
 <template>
-  <div class="custom-table-test">
-    <div class="form-test">
+  <div class="form-table-page">
+    <div class="form-container">
       <Form v-model="formData" :forms="formCfg" ref="formRef" inline />
     </div>
-    <CustomTable
-      :data="testData"
-      :columns="config"
-      :deps="deps"
-      border
-      height="100%"
-      ref="table"
-    />
+    <div class="table-container">
+      <CustomTable
+        :data="testData"
+        :columns="config"
+        :deps="deps"
+        border
+        height="100%"
+        ref="table"
+      />
+    </div>
   </div>
 </template>
 
 <style scoped lang="scss">
-.custom-table-test {
+.form-table-page {
   width: 100%;
   height: 100%;
   background-color: #fff;
   padding: 16px;
-  .form-test {
+  display: flex;
+  flex-direction: column;
+  .form-container {
     padding-bottom: 16px;
+  }
+  .table-container {
+    flex: 1;
+    min-height: 0;
   }
 }
 </style>
