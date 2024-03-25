@@ -126,7 +126,7 @@ function init(el: HTMLElement, binding: { value: IBindValue }, props: INeedProps
     btns: { up: null, down: null },
     originElStyle: elOptionMap.get(el)?.originElStyle || {}
   }
-  if (unref(elOption.bindValue.enable) && !new Set(['time', 'week']).has(props.type || '')) {
+  if (unref(elOption.bindValue.enable) && !new Set(['week']).has(props.type || '')) {
     elOption = initStepBtn(el, elOption)
     primaryIconOffset(el, elOption)
     toggleOriginIconMouseover(el, elOption)

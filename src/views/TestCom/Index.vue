@@ -82,6 +82,9 @@ function myClickRemove() {
     <div class="test-datepicker-step">
       <DatepickerStep />
     </div>
+    <div style="padding: 20px;">
+      <span style="display: inline-block; cursor: pointer; width: 12px; height: 12px; border: 6px solid transparent; border-bottom: 6px solid #666666;"></span>
+    </div>
   </div>
 </template>
 

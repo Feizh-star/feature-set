@@ -13,15 +13,21 @@ const formData = reactive({
   hour: todayMoment.format('YYYYMMDDHH00'),
   minute: todayMoment.format('YYYYMMDDHHmm'),
   second: todayMoment.format('YYYYMMDDHHmmss'),
+  hms: todayMoment.format('HHmmss'),
   range: [moment().subtract(7, 'd').format('YYYYMMDDHH00'), moment().subtract(4, 'd').format('YYYYMMDDHH00')],
   interval: moment().subtract(1, 'day').format('YYYYMMDD1200')
 })
 
 function disableDate(date: Date) {
-  return date > moment().toDate()
+  return date > todayMoment.toDate()
 }
 function disableTime(date: Date) {
-  return date > moment().toDate()
+  return date > todayMoment.toDate()
+}
+function disableHmsTime(date: Date) {
+  const dateHms = parseInt(moment(date).format('HHmmss'))
+  const currentHms = parseInt(todayMoment.format('HHmmss'))
+  return dateHms > currentHms
 }
 
 const yearValue = ref(todayMoment.format('YYYY'))
@@ -116,6 +122,18 @@ const yearCfg = {
           value-type="YYYYMMDDHHmmss"
           :disabled-date="disableDate"
           :disabled-time="disableTime"
+          :clearable="true"
+          :confirm="true"
+          confirm-text="确定" />
+      </el-form-item>
+      <el-form-item label="时分秒">
+        <DatePicker
+          v-datepicker-step="{ bind: formData, key: 'hms', enable: true }"
+          type="time"
+          v-model:value="formData.hms"
+          format="HH:mm:ss"
+          value-type="HHmmss"
+          :disabled-time="disableHmsTime"
           :clearable="true"
           :confirm="true"
           confirm-text="确定" />
