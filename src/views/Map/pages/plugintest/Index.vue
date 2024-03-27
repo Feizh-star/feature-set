@@ -1,5 +1,9 @@
 <script setup lang="ts">
 import TestMap from '@/views/Map/pages/plugintest/components/TestMap.vue'
+import { useWindField } from './compositions/useWindField'
+const mapRef = shallowRef()
+
+useWindField({ mapRef })
 </script>
 
 <template>

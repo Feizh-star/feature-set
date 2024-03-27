@@ -1,7 +1,8 @@
 import { shallowRef } from 'vue'
 import type * as L from 'leaflet'
 import type { ShallowRef } from 'vue'
-import { windyLayer } from 'hcl'
+// import { windyLayer } from 'hcl'
+import windyLayer from '@/libs/map/plugins/windyLayer.js'
 
 export interface IUseWindField {
   mapIns: ShallowRef<L.Map | null>

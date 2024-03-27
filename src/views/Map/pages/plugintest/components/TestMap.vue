@@ -68,7 +68,7 @@ const geojsonAreaConfig = {
 }
 // 区县标注配置
 const geojsonPointConfig = {
-  enable: true,
+  enable: false,
   option: {
     zIndex: 1060,
     layers: [
@@ -99,6 +99,9 @@ const {
   removeGlStainImg,
   addMarkers,
   removeMarkers,
+  // 风流场
+  drawWindField,
+  removeWindField,
 } = useInitMap({
   mapElRef,
   panes: panesCfg,
@@ -180,6 +183,9 @@ defineExpose({
   // 格点
   addStations,
   removeStations,
+  // 风流场
+  drawWindField,
+  removeWindField,
 })
 </script>
 
