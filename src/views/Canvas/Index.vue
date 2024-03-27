@@ -60,7 +60,7 @@ class Point {
     this.dy = dy || 5
     this.r = r || 10
     this.style = { ...defaultPointStyle(), ...(style || {}) }
-    this.alive = Math.floor(Math.random() * 50 + 30)
+    this.alive = Math.floor(Math.random() * 75 + 50)
   }
   updatePoint(x: number, y: number, r?: number) {
     if (r) this.r = r
@@ -129,7 +129,7 @@ function init() {
   if (!canvas) return
   const context = canvas.getContext('2d') as CanvasRenderingContext2D
   genUV(canvas.width, canvas.height)
-  for (let i = 0; i < 3000; i++) {
+  for (let i = 0; i < 1000; i++) {
     addPoint(context, canvas.width, canvas.height)
   }
   drawPoints(context, pointsList)

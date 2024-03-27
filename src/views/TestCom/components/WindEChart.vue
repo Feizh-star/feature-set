@@ -2,7 +2,8 @@
 import { ref } from 'vue'
 import moment from 'moment'
 import type echarts from 'echarts'
-import { getWindPath } from '@/utils/tools'
+import { getWindShaftPath } from '@/utils/tools'
+import { point } from 'leaflet'
 
 const userYYYYMMDDHHmm = 'YYYY-MM-DD HH:mm'
 
@@ -131,7 +132,7 @@ function windDataHandler(chart: echarts.ECharts, data: Array<any>) {
   const maxValue = Math.max(...data.map(item => item.value))
   const yAxisMax = Math.ceil((maxValue + 10) / 10) * 10
   const series1Data = data.map(item => {
-    const symbolPath = `path://${getWindPath(item.value)}`
+    const symbolPath = `path://${getWindShaftPath(item.value)}`
     return {
       value: item.value,
       symbol: symbolPath,
@@ -176,11 +177,47 @@ function genRandomData() {
   }
   return res
 }
+
+
+function getWindShaftImg(speed: number, color: string = '#333333') {
+  const path = getWindShaftPath(speed)
+  const pointStr: any = path.match(/(M|L)\d+\s\d+/g)
+  if (!pointStr) return ''
+  const points: {
+    type: 'lineTo' | 'moveTo'
+    point: [number, number]
+  }[] = pointStr.map((item: string) => {
+    const point1 = item.split(/\s/)
+    const startAction = point1[0]?.[0] || 'L'
+    return {
+      type: startAction === 'L' ? 'lineTo' : 'moveTo', // 不是L就是M
+      point: [point1[0]?.replace(/(M|L)/, '') || 0, point1[1] || 0]
+    }
+  })
+  const xMax = Math.max(...points.map(item => item.point[0]))
+  const yMax = Math.max(...points.map(item => item.point[1]))
+  const canvas = document.createElement('canvas')
+  canvas.width = xMax
+  canvas.height = yMax
+  const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
+  for (const pt of points) {
+    const actionName = pt.type
+    const point = pt.point
+    ;(ctx as any)[actionName](point[0], point[1])
+  }
+  ctx.fillStyle = color
+  ctx.fill()
+  const dataUrl = canvas.toDataURL()
+  return dataUrl
+}
 </script>
 
 <template>
   <div class="echart-wind-shaft">
     <component :is="dynamicComponent" :data="data" :options="options" @data-change="windDataHandler" />
+    <div class="svg-img">
+      <img :src="getWindShaftImg(18.8)" alt="">
+    </div>
   </div>
 </template>
 
@@ -193,6 +230,9 @@ function genRandomData() {
   .chart-container {
     width: 100%;
     height: 100%;
+  }
+  .svg-img {
+    margin-top: 20px;
   }
 }
 </style>

@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import HorScroll from '@/components/HorScroll/IndexV3.vue'
 import TimeSquence from './components/TimeSquence.vue'
 import WindEChart from './components/WindEChart.vue'
+import DatepickerStep from './components/DatepickerStep.vue'
 
 
 
@@ -78,6 +79,10 @@ function myClickRemove() {
       <!-- <img src="@/assets/images/error.png" alt="" /> -->
       <span>123</span>
     </div>
+    <div class="test-datepicker-step">
+      <DatepickerStep />
+    </div>
+    <div class="test-mask"></div>
   </div>
 </template>
 
@@ -116,5 +121,17 @@ function myClickRemove() {
   font-size: 30px;
   font-weight: 700;
   text-shadow: 3px 3px 1px #333;
+}
+.test-mask {
+  height: 373px;
+  width: 230px;
+  transform: rotate3d(1, 0, 0, 180deg);
+  background-image: radial-gradient(100% 50% at 50% 110%, #00000000, #00000022 20%, #00000044 40%, #00000066 60%, #00000088 100%, #000000aa);
+  
+  // #000000ff 45%,
+  //   #000000cc 55%,
+  //   #00000088 75%,
+  //   #00000055 85%,
+  //   #00000000
 }
 </style>
