@@ -82,9 +82,7 @@ function myClickRemove() {
     <div class="test-datepicker-step">
       <DatepickerStep />
     </div>
-    <div style="padding: 20px;">
-      <span style="display: inline-block; cursor: pointer; width: 12px; height: 12px; border: 6px solid transparent; border-bottom: 6px solid #666666;"></span>
-    </div>
+    <div class="test-mask"></div>
   </div>
 </template>
 
@@ -123,5 +121,17 @@ function myClickRemove() {
   font-size: 30px;
   font-weight: 700;
   text-shadow: 3px 3px 1px #333;
+}
+.test-mask {
+  height: 373px;
+  width: 230px;
+  transform: rotate3d(1, 0, 0, 180deg);
+  background-image: radial-gradient(100% 50% at 50% 110%, #00000000, #00000022 20%, #00000044 40%, #00000066 60%, #00000088 100%, #000000aa);
+  
+  // #000000ff 45%,
+  //   #000000cc 55%,
+  //   #00000088 75%,
+  //   #00000055 85%,
+  //   #00000000
 }
 </style>

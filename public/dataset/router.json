@@ -280,15 +280,6 @@
             }
           },
           {
-            "path": "trafficmap",
-            "name": "trafficmap",
-            "component": "Map/pages/traffic-map/Index.vue",
-            "meta": {
-              "title": "交通地图",
-              "hidden": false
-            }
-          },
-          {
             "path": "hclstaintest",
             "name": "hclstaintest",
             "component": "Map/pages/hcl-stain/Index.vue",
