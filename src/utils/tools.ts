@@ -277,3 +277,30 @@ export function getWindShaftImg(speed: number, color: string = '#333333') {
   const dataUrl = canvas.toDataURL()
   return dataUrl
 }
+
+/**
+ * 二分法查找，超出范围的取端点索引，在范围内的索引向下取整
+ */
+function binarySearch(list: any[], value: number): number {
+  let left: number = 0
+  let right: number = list.length
+  if (value <= list[0]) return 0
+  if (value >= list[right - 1]) return right - 1
+  while (left < right) {
+    const midIndex: number = (left + right) >> 1
+    const midVlaue: number = list[midIndex]
+    if (midVlaue === value) {
+      right = midIndex
+      break
+    } else if (midVlaue < value) {
+      left = midIndex
+    } else {
+      right = midIndex - 1
+    }
+  }
+  return right
+}
+// 测试二分查找
+for (const i of [-1, 0, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5]) {
+  console.log(i, binarySearch([2, 3, 4], i))
+}
