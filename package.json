@@ -37,6 +37,7 @@
     "leaflet.bigimage": "^1.0.1",
     "mockjs": "^1.1.0",
     "moment": "^2.29.4",
+    "pako": "^2.1.0",
     "path-browserify": "^1.0.1",
     "pbf": "^3.2.1",
     "pinia": "^2.0.32",
