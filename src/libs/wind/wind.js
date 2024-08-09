@@ -37,7 +37,7 @@ let windyLayer = L.Layer.extend({
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     this.galpha = 0
     cancelAnimationFrame(this.play)
-    let new_position = this._map._getMapPanelPos().multiplyBy(-1)
+    let new_position = this._map._getMapPanePos().multiplyBy(-1)
     L.DomUtil.setPosition(this.canvas, new_position)
     this.createParticles()
     this.buildColumns()
@@ -87,7 +87,7 @@ let windyLayer = L.Layer.extend({
       const uscale = imgdata.data[1]
       const vadd = imgdata.data[4]
       const vscale = imgdata.data[5]
-      for (let i = 0; i < img.length; i++) {
+      for (let i = 0; i < img.height - 1; i++) {
         data[i] = new Array(img.width)
         for (let j = 0; j < img.width; j++) {
           const num = ((i + 1) * img.width + j) * 4
