@@ -79,7 +79,7 @@ function compress(numbers, codes) {
 }
 
 // 示例使用
-function test(ds: string, fq: number[][]) {
+export function test(ds: string, fq: number[][]) {
   const numbers = ds.split('');
   const frequencies = fq;  // 假设预先计算好了频率
 
@@ -90,6 +90,7 @@ function test(ds: string, fq: number[][]) {
 
   const compressed = compress(numbers, huffmanCodes);
   console.log('压缩后的序列:', compressed, compressed.length);
+  return compressed
 
   const compressedNumber: number[] = []
   for (let i = 0; i < Math.ceil(compressed.length / 8); i++) {
@@ -109,6 +110,17 @@ function test(ds: string, fq: number[][]) {
   return result
 }
 
-const prev = test(dataString, freq)
+export function statisticsFreq(str: string) {
+  const valueMap = new Map()
+  for (const val of str) {
+    let count = valueMap.get(val) || 0
+    count++
+    valueMap.set(val, count)
+  }
+  const freq = [...valueMap]
+  return freq
+}
+
+// const prev = test(dataString, freq)
 
 
