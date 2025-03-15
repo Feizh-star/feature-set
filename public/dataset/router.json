@@ -103,6 +103,15 @@
           "title": "Mock测试",
           "hidden": false
         }
+      },
+      {
+        "path": "datacompress",
+        "name": "datacompress",
+        "component": "Compress/Compress.vue",
+        "meta": {
+          "title": "数据压缩测试",
+          "hidden": false
+        }
       }
     ]
   },
