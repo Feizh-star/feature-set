@@ -34,35 +34,34 @@ function testGlobalCompositeOperation(canvas: HTMLCanvasElement) {
   const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
   const width = canvas.width
   const height = canvas.height
-  const gradient = ctx.createRadialGradient(0, 0, 20, 0, 0, 70)
-  gradient.addColorStop(0, '#fff')
-  gradient.addColorStop(0.6, '#ffffff00')
-  gradient.addColorStop(1, '#ffffff00')
-  ctx.save()
-  ctx.translate(width / 2, height / 2)
-  ctx.fillStyle = gradient
-  ctx.beginPath()
-  ctx.arc(0, 0, 50, 0, Math.PI * 2)
-  ctx.closePath()
-  ctx.fill()
-  ctx.restore()
+  const size = 20
+  const startX = width - 2 * size
+  const startY = height - 2 * size
+  
+  ctx.globalAlpha = 0.9
 
-  for (let i = 1; i <= 10; i++) {
-    ctx.save()
-    ctx.globalCompositeOperation = 'destination-out'
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.2)'
-    ctx.fillRect(0, 0, width, height);
-    ctx.restore()
+  for (let i = 1; i < 31; i++) {
+    debugger
+    // 保留旧图形与新图形重叠的部分，其余透明。保留的部分，会应用globalAlpha和fillStyle的透明度
+    ctx.globalCompositeOperation = 'destination-in'
+    ctx.fillStyle = 'rgba(0, 0, 0, 1)'
+    ctx.fillRect(0, 0, width, height)
 
-    ctx.save()
-    ctx.translate(width / 2 - 10 * i, height / 2 + 10 * i)
-    ctx.fillStyle = gradient
-    ctx.beginPath()
-    ctx.arc(0, 0, 50, 0, Math.PI * 2)
-    ctx.closePath()
-    ctx.fill()
-    ctx.restore()
+    debugger
+    // ctx.globalCompositeOperation = 'lighter' // 新图形和旧图形叠加时，会把新旧图形颜色值相加
+    ctx.globalCompositeOperation = 'source-over' // 新图形覆盖旧图形
+    ctx.fillStyle = '#ffffff'
+    ctx.fillRect(startX - 10 * i, startY - 10 * i, size, size)
+    
+    // 保留旧图形与新图形重叠的部分，其余透明。保留的部分，会应用globalAlpha和fillStyle的透明度
+    ctx.globalCompositeOperation = 'destination-in'
+    ctx.fillStyle = 'rgba(0, 0, 0, 1)'
+    ctx.fillRect(width / 4, height / 4, width / 2, height / 2)
   }
+  // // 保留旧图形与新图形重叠的部分，其余透明。保留的部分，会应用globalAlpha和fillStyle的透明度
+  // ctx.globalCompositeOperation = 'destination-in'
+  // ctx.fillStyle = 'rgba(0, 0, 0, 1)'
+  // ctx.fillRect(width / 4, height / 4, width / 2, height / 2)
 }
 </script>
 
@@ -83,8 +82,8 @@ function testGlobalCompositeOperation(canvas: HTMLCanvasElement) {
   .canvas-container {
     display: inline-block;
     border: 1px solid #cccccc;
-    // background-image: radial-gradient(#aaa, #333);
-    background-color: orange;
+    background-image: radial-gradient(#aaa, #333);
+    // background-color: #cccccc;
   }
 }
 </style>

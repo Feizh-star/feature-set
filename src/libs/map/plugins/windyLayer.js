@@ -211,6 +211,7 @@ let windyLayer = L.Layer.extend({
     g.globalCompositeOperation = 'destination-in'
     g.fillRect(0, 0, size.x, size.y)
     g.globalCompositeOperation = 'lighter'
+    // g.globalCompositeOperation = 'source-over'
     g.globalAlpha = this.galpha
     g.beginPath()
     const particles = Array.from(this.particles)
@@ -245,6 +246,13 @@ let windyLayer = L.Layer.extend({
       e.age = e.age + 1
     }
     g.stroke()
+    
+    g.save()
+    g.globalCompositeOperation = 'destination-in'
+    g.fillStyle = '#ffffff'
+    g.globalAlpha = 1
+    g.fillRect(size.x / 4, size.y / 4, size.x / 2, size.y / 2)
+    g.restore()
   },
   addAlpha() {
     console.log('addAlpha')
